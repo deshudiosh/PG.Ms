@@ -1,0 +1,44 @@
+Option Explicit 
+'Script written by Deshu
+
+Call Main() 
+Sub Main() 
+	Dim curves, curve, segments, segment, points, point 
+	Dim curveSep, segmentSep, pointSep 
+	Dim outString 
+
+	curveSep = "|" 
+	segmentSep = ";" 
+	pointSep = "/" 
+	outString = "" 
+
+	curves = Rhino.GetObjects("Select Curves:", 4, True, True) 
+
+	'cycle through curves 
+	If IsArray(curves) Then 
+
+		'convert curve to beziers (segments) 
+		For Each curve In curves 
+			segments = Rhino.ConvertCurveToBezier(curve, False)
+
+			'get all segment points 
+			For Each segment In segments 
+				points = Rhino.CurvePoints(segment) 
+
+				'write all points to string 
+				For Each point In Points 
+					outString = outString & "[" & point(0) & "," & point(1) & "," & point(2) & "]" & pointSep 
+				Next 
+
+				outString = outString & segmentSep 
+			Next 
+
+			outString = outString & curveSep 
+
+			Rhino.DeleteObjects(segments) 
+		Next 
+	End If 
+
+	Rhino.ClipboardText(outString) 
+	Rhino.Print("Curves copied to clipboard.") 
+End Sub

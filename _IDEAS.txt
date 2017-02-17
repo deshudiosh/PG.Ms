@@ -1,0 +1,35 @@
+4. Script luncher
+znajduje wszystkie skrypty z DSH z przodu w danym miejscu i wyswietla jako liste z guzikami do uruchamiania ich
+a jak klikniesz z shiftem to odpala osttanio uruchomiony skrypt
+
+
+2. Save Next Render 
+- zjebane jest coś, jak w dropdowna weźmiesz nie-ostatni render, i klikniesz save, to sie nie pta czy nadpisać, oraz nie zwieksza się numerek po zapisaniu
+
+1. colapse selected modifiers to single edit poly (kopia, wywalene modyfikatorów, dodanie nowego edit poly, attach)
+
+
+
+2 fernel map single color to white/black (niech pobiera color z canalu diffuse w materiale do jakiego jest zadane)
+
+
+5. 4pointalign 2d (np top view)
+
+6. 4pointalign 
+matrix mozna osiągnać poprzez odjecie nowej transformacji od starej (mowa o transformacji punktu z aktualnego skryptu)
+dzieki czemu bedzie można sprawić żeby ten skrypt działał na sub-obiektach, hła hła hła
+
+
+
+
+
+
+
+6. Link / unlink camera parameters
+
+
+
+
+
+
+1. modyfikator fillet na spline - nie da się

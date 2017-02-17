@@ -1,0 +1,1 @@
+messageBox "Copy/Paste by Pawel Grzelak installed!\nRestart 3ds Max now, and look into\nCustomize -> Custom User Interface -> \"Pawel Grzelak\" category." title:"Well done!"
