@@ -30,28 +30,28 @@ fn ffdSourceToVerts src verts = (
 	addmodifier b ffd
 	animateAll ffd
 	
-	append tempbox b ---WYWAL TO
+	--append tempbox b ---WYWAL TO
 	
 	-- ASSIGN ffd control points anim tracks array to variable 
 	local cps = ffd["Master"]
 
--- 	cps[1].value = verts[5]
--- 	cps[2].value = verts[6]
--- 	cps[3].value = verts[8]
--- 	cps[4].value = verts[7]
--- 	cps[5].value = verts[3]
--- 	cps[6].value = verts[2]
--- 	cps[7].value = verts[4]
--- 	cps[8].value = verts[1]
-	
 	cps[1].value = verts[5]
 	cps[2].value = verts[6]
 	cps[3].value = verts[8]
 	cps[4].value = verts[7]
-	cps[5].value = verts[1]
-	cps[6].value = verts[3]
-	cps[7].value = verts[2]
-	cps[8].value = verts[4]
+	cps[5].value = verts[3]
+	cps[6].value = verts[2]
+	cps[7].value = verts[4]
+	cps[8].value = verts[1]
+	
+-- 	cps[1].value = verts[5]
+-- 	cps[2].value = verts[6]
+-- 	cps[3].value = verts[8]
+-- 	cps[4].value = verts[7]
+-- 	cps[5].value = verts[1]
+-- 	cps[6].value = verts[3]
+-- 	cps[7].value = verts[2]
+-- 	cps[8].value = verts[4]
 	
 	
 -- 	for i=1 to verts.count do (
@@ -66,6 +66,5 @@ fn getPolyVertPositions target polyIdx = (
 	positions
 )
 
-delete tempbox
 clearlistener()
-micromesh $Sphere002 $src1
+micromesh $Sphere001 $src1
