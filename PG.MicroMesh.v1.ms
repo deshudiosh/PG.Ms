@@ -1,70 +1,68 @@
-fn micromesh target src = (
-	-- 1. GET NUMBER OF POLYS
-	local polycount = polyOp.getNumFaces target
-	local polycountHalf = polycount/2
-	
-	-- 2. CREATE POLY PAIRS (1 + 21, 2+22, 3+23)
-	local polyPairs = for i=1 to polycountHalf collect #(i, i+polycountHalf)
-		
-	-- 3. ITERATE: COLLECT VERTS POSITIONS FOR EACH PAIR
-	local polyPairVertsPositions = #()
-	for pair in polyPairs do ( 
-		local positions = (getPolyVertPositions target pair[1])
-		join positions (getPolyVertPositions target pair[2])
-		append polyPairVertsPositions positions
-	)
-	
-	-- 4. ITERATE: COPY SOURCE OBJECT AND APPLY FFD 2X2X2, AND APPLY VERTS POSITIONS TO FFD
-	for polyPairVerts in polyPairVertsPositions do (
-		ffdSourceToVerts src polyPairVerts
-	)
--- 	ffdSourceToVerts src polyPairVertsPositions[1]
-	
+struct vertex (idx, pos, normal)
+
+fn getVertNormal target vertIdx = (
+	local vertFaces = polyOp.getFacesUsingVert target vertIdx
+	local normal = [0,0,0]; 
+	for faceIdx in vertFaces do normal += polyOp.getFaceNormal target faceIdx node:target
+	normalize (normal / vertFaces.count)
 )
 
-fn ffdSourceToVerts src verts = (
-	--local b = box length:1 height:1 width:1
-	local b = reference src
+fn ffdSourceToVerts src verts offsetVerts= (
+	local obj = reference src
 	local ffd = ffdBox()
 	setDimensions ffd [2, 2, 2]
-	addmodifier b ffd
+	addmodifier obj ffd
 	animateAll ffd
 	
-	--append tempbox b ---WYWAL TO
-	
-	-- ASSIGN ffd control points anim tracks array to variable 
+	-- control points
 	local cps = ffd["Master"]
-
-	cps[1].value = verts[5]
-	cps[2].value = verts[6]
-	cps[3].value = verts[8]
-	cps[4].value = verts[7]
-	cps[5].value = verts[3]
-	cps[6].value = verts[2]
-	cps[7].value = verts[4]
-	cps[8].value = verts[1]
 	
--- 	cps[1].value = verts[5]
--- 	cps[2].value = verts[6]
--- 	cps[3].value = verts[8]
--- 	cps[4].value = verts[7]
--- 	cps[5].value = verts[1]
--- 	cps[6].value = verts[3]
--- 	cps[7].value = verts[2]
--- 	cps[8].value = verts[4]
+	local map = #(2,3,1,4) --up
+-- 	local map = #(4,1,3,2) --down
+-- 	local map = #(3,4,2,1) --left
+-- 	local map = #(1,2,4,3) --right
 	
-	
--- 	for i=1 to verts.count do (
-		--ffd["Master"][i].value = verts[i]
-		--text size:2 pos:vert isSelected:off text:(i as String)
--- 	)
+	for i=1 to 4 do (
+		cps[i].value = verts[map[i]].pos
+		cps[i+4].value = offsetVerts[map[i]].pos
+	)
+	obj
 )
 
-fn getPolyVertPositions target polyIdx = (
- 	local faceVertsIdxs = polyOp.getFaceVerts target polyIdx
-	local positions = for vertIdx in faceVertsIdxs collect (polyOp.getVert target vertIdx)
-	positions
+fn micromesh target src = (
+	-- 1. CREATE VERT STRUCTS
+	local verts = for vertIdx=1 to (polyop.getNumVerts target) collect (
+		local pos = polyOp.getVert target vertIdx
+		local normal = getVertNormal target vertIdx
+		
+		vertex vertIdx pos normal
+	)
+	
+	-- 2. CREATE OFFSET VERTS
+	local offsetDistance = 5
+	local offsetVerts = for vert in verts collect (
+		local newPos = vert.pos + vert.normal * offsetDistance
+		vertex vert.idx newPos vert.normal
+	) 
+	
+	-- 3. GET VERTS FOR EACH POLYGON
+	local vertsIdxesPerPoly = for polyIdx=1 to (polyOp.getNumFaces target) collect (
+		polyOp.getFaceVerts target polyIdx
+	)
+		
+	-- 4. FOR EACH POLY, CONFORM SOURCE
+	local objs = #()
+	for vertIdxes in vertsIdxesPerPoly do (
+		local polyVerts = for vertIdx in vertIdxes collect ( verts[vertIdx])
+		local polyOffsetVerts = for vertIdx in vertIdxes collect ( offsetVerts[vertIdx])
+		
+		local obj = ffdSourceToVerts src polyVerts polyOffsetVerts
+		append objs obj
+	)
+	
+	-- 5. ATTACH TO SINGLE OBJ AND WELD
+	--for i=2 to objs.count do (polyOp.attach objs[1] objs[2])
 )
 
 clearlistener()
-micromesh $Sphere001 $src1
+with redraw off ( micromesh $Sphere001 $arrow )
