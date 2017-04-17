@@ -1,3 +1,17 @@
+-- function by Neil Marshall 12/31/2011
+-- https://neiltech.wordpress.com/2011/12/31/maxscript-converting-between-ffd-space-and-world-space/
+
+fn WorldSpaceToFFDSpace obj ffd pos = (
+	objTM = obj.objecttransform
+	modTM = (getModContextTM obj ffd) * ffd.lattice_transform.value
+	modBBMin = getModContextBBoxMin obj ffd
+	modBBMax = getModContextBBoxMax obj ffd
+	size = modBBMax - modBBMin
+	thePoint = (pos * (inverse objTM) * (inverse modTM) - modBBMin) / size
+)
+
+-----------------
+
 struct vertex (idx, pos, normal)
 
 fn getVertNormal target vertIdx = (
@@ -26,6 +40,12 @@ fn ffdSourceToVerts src verts offsetVerts= (
 		cps[i].value = verts[map[i]].pos
 		cps[i+4].value = offsetVerts[map[i]].pos
 	)
+	
+-- 	for i=1 to 4 do (
+-- 		cps[i].value = WorldSpaceToFFDSpace obj ffd verts[map[i]].pos
+-- 		cps[i+4].value = WorldSpaceToFFDSpace obj ffd offsetVerts[map[i]].pos
+-- 	)
+
 	obj
 )
 
@@ -39,7 +59,7 @@ fn micromesh target src = (
 	)
 	
 	-- 2. CREATE OFFSET VERTS
-	local offsetDistance = 5
+	local offsetDistance = 2
 	local offsetVerts = for vert in verts collect (
 		local newPos = vert.pos + vert.normal * offsetDistance
 		vertex vert.idx newPos vert.normal
@@ -60,9 +80,10 @@ fn micromesh target src = (
 		append objs obj
 	)
 	
+	select objs
 	-- 5. ATTACH TO SINGLE OBJ AND WELD
 	--for i=2 to objs.count do (polyOp.attach objs[1] objs[2])
 )
 
 clearlistener()
-with redraw off ( micromesh $Sphere001 $arrow )
+with redraw off ( micromesh $Plane002 $src001 )
