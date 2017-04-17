@@ -1,7 +1,7 @@
 -- function WorldSpaceToFFDSpace by Neil Marshall 12/31/2011
 -- https://neiltech.wordpress.com/2011/12/31/maxscript-converting-between-ffd-space-and-world-space/
 fn WorldSpaceToFFDSpace obj ffd pos = (
-	print obj ----->>> STRANGE FIX LINE HERE !
+	classof obj  --this is a hack causing a fast reevaluation of the stack! http://forums.cgsociety.org/showthread.php?p=2945244#post2945244
 	objTM = obj.objecttransform
 	modTM = (getModContextTM obj ffd) * ffd.lattice_transform.value
 	modBBMin = getModContextBBoxMin obj ffd
@@ -78,5 +78,4 @@ fn micromesh target src = (
 
 clearlistener()
 deselect selection
-with redraw off ( micromesh $Plane002 $src002 )
--- micromesh $Plane005 $src002
+with redraw off ( micromesh $Plane001 $src002 )
