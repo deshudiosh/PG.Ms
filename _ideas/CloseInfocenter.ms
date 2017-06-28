@@ -1,0 +1,1 @@
+UIAccessor.CloseDialog (for c in (windows.getChildrenHWND #max) where c[5]=="InfoCenterHwndSource" collect c)[1][1]

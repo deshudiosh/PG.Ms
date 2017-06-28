@@ -6,11 +6,11 @@ fn compareNames str1 str2 = stricmp str1.name str2.name
 
 
 fn nextToEachOther = (
-	objs = geometry as array
+	objs = selection as array
 	qSort objs compareNames
 	
 	lists = #()
-	similarNameLength = 4
+	similarNameLength = 5
 	lastname = ""
 	
 	-- sort objs by name similarity, and add to arrays
