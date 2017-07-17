@@ -7,25 +7,27 @@ fn openBRdialog = (
 	actionMan.executeAction -43434444 "4096"
 )
 
-fn removeViews brm = (
-	print brm.numviews
-	for i = 1 to brm.numviews do ( brm.deleteview i )
-)
+fn compareNames str1 str2 = stricmp str1.name str2.name
 
-fn createViewPerCam brm = (
-	for cam in Cameras do (
-		if classof cam != Targetobject do (  
-			view = brm.createview cam
-		)
+fn removeViews = ( while batchRenderMgr.numviews > 0 do ( batchRenderMgr.deleteview 1 ) )
+
+fn createViewPerCam = (
+	
+	cams = for cam in Cameras where (classof cam != Targetobject) collect cam
+	qSort cams compareNames
+	
+	for cam in cams do ( 
+		view = batchRenderMgr.createview cam
+		view.camera = cam
+		view.outputFilename = (maxFilePath + "/" + cam.name + ".jpg")
+		--view.name = cam.name
 	)
 )
 
 fn br = (
-	brm = batchRenderMgr
-	
-	removeViews brm
 	closeBRDialog()
-	createViewPerCam brm
+	removeViews()
+	createViewPerCam()
 	openBRdialog()
 )
 
