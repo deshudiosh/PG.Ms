@@ -1,5 +1,8 @@
 1. Camera Select Dialog alternative, with preview checkbox
 
+2. Trim subsplines (from selection) to the selected rectangle - DWG cleaning tool
+
+
 1. colapse selected modifiers to single edit poly (kopia, wywalene modyfikatorów, dodanie nowego edit poly, attach)
 2 fernel map single color to white/black (niech pobiera color z canalu diffuse w materiale do jakiego jest zadane)
 
