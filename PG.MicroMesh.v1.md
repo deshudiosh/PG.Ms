@@ -1,14 +1,15 @@
-Todo:
+Todo (sorted by importance):
 - [ ] **Fix: Undo (single step for whole script)**
 - [ ] **Feature: Alter rotation/model selectively after initial scattering.**
-- [ ] Fix: Consistent wire color
-- [ ] Feature: Work only on selected quads
-- [ ] Feature: Merge (attach and weld to single mesh)
-- [ ] Feature: Thickness min/max from illuminance
 - [ ] Feature: Two generator surfaces 
-- [ ] Feature: Surface transparency slider and temporary material.
-- [ ] Ui Rebuild
+- [ ] Feature: Merge (attach and weld to single mesh)
+- [ ] Fix: Consistent wire color
+- [ ] Fix: Ignore nonquads in the model
+
 - [ ] Feature: Autoupdate (tickbox)
+- [ ] Feature: Surface transparency slider and temporary material.
+- [ ] Feature: Thickness min/max from illuminance
+- [ ] Ui Rebuild
 
 Maybe:
 - [ ] Feature: Morph two tiles based on illuminance(?)
