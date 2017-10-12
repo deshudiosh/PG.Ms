@@ -4,7 +4,6 @@
 
 
 1. colapse selected modifiers to single edit poly (kopia, wywalene modyfikatorów, dodanie nowego edit poly, attach)
-2 fernel map single color to white/black (niech pobiera color z canalu diffuse w materiale do jakiego jest zadane)
 
 5. 4pointalign 2d (np top view)
 6. 4pointalign 
