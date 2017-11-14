@@ -1,1 +1,0 @@
-encryptScript "C:\Users\pawelgrz\Desktop\Skrypty\DSH.CopyPaste.v2\DSH.CopyPaste.v2_Settings.ms"

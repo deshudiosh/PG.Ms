@@ -1,6 +1,0 @@
-copy "DSH_Shared.ms" to "$max\stdplugs\stdscripts\"
-copy "DSH_Copy.mcr" to "$userMacros\"
-copy "DSH_Paste.mcr" to "$userMacros\"
-run "message.ms"
-drop "message.ms"
-clear temp 
