@@ -1,11 +1,4 @@
 __Micro Mesh__
-
-<details><summary>Changelog:</summary>
-  <p> works! </p>
-  * single surface
-  <p> todo:</p>
-  <p>* dual surface </p>
-</details>
 <details>
     <summary>Changelog:</summary><p>
 * list
