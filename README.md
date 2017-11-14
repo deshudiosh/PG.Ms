@@ -1,5 +1,5 @@
 ## Micro Mesh
-Replaces quad-polygons with given object.
+**Replaces quad-polygons with given object.**
 
 <details><summary>Features and plans:</summary><p>
 
