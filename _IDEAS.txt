@@ -1,3 +1,9 @@
+#PGSL
+create global interface / struct with settings, based on ini -> PGSettings()
+registerMacros function
+autoupdate?
+
+
 # world/local/pick reference coordinate switch
 
 # DWG cleaning tool: Trim subsplines (from selection) to the selected rectangle 
