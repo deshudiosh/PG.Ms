@@ -3,6 +3,11 @@ create global interface / struct with settings, based on ini -> PGSettings()
 registerMacros function
 autoupdate?
 
+# section auto update:
+# - add slider for section Y offset, so you can model without distraction
+# - multiple sections
+# - any object (maybe check for geo changes in selected obejct only?) 
+
 
 # world/local/pick reference coordinate switch
 

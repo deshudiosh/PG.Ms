@@ -16,8 +16,17 @@ rollout PGCamSelect "PG Camera Select"  width:200 height:280 (
 	button btnCancel "Cancel" width:60 pos:[75, 250]
 	button btnApply "Apply" width:60 pos:[135, 250]
 	
+	fn sortCamerasByName c1 c2 = (
+		which = c1.name > c2.name
+		case of (
+			(which): 1
+			default: 0
+		)
+	)
+	
 	fn getCameras onlyNames = (
 		cams = (for c in cameras where classof c != Targetobject collect c)
+		qsort cams sortCamerasByName
 		if onlyNames do cams = (for c in cams collect c.name)
 		cams
 	)
