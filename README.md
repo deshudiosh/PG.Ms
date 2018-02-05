@@ -21,11 +21,8 @@ initial release
 ## Batch Render
 **Create batch job for each camera in scene.**
 
-<details><summary>Features and plans:</summary><p>
+Features and plans:
 
-- [x] single surface
-- [ ] dual surface
-- [ ] auto weld
-- [ ] preview with turbosmooth
-- [ ] hide scatter object
-</p></details>
+- [x] add batch jobs
+- [ ] name prefix/suffix
+- [ ] set save directory
