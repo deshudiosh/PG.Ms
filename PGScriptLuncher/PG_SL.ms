@@ -4,7 +4,7 @@ fn getScripts = (
 	-- start looking in default location
 	scripts = getFiles ((getdir #userScripts) + "\\PGScripts\\PG.*.ms")
 	
-	scripts += (getFiles "C:\GitHub\PG.Mxs\PG.*.ms")
+	scripts += (getFiles "C:\GitHub\PG.Ms\PG.*.ms")
 	
 	-- and add scripts from custom locations
 	for url in (getINISetting ((getdir #userScripts) + @"\PGScripts\PG_SL.ini")) do (
