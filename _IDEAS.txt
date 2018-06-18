@@ -1,7 +1,18 @@
-#PGSL
+﻿#PGSL
 create global interface / struct with settings, based on ini -> PGSettings()
 registerMacros function
 autoupdate?
+
+
+#DWG Cleaner
+- select/hide layer by sel objects
+- move layers to one main layer "DWG"
+- boundary shape cutout splines
+- import button inside script (can distinct which objects were imported thanks to this -> all obejcts - objects before selction = new objects)
+- delete "blocks" button
+
+
+
 
 # section auto update:
 # - add slider for section Y offset, so you can model without distraction

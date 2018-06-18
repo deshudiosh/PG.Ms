@@ -4,7 +4,7 @@ macroScript PG_SL
 	buttonText:"PGSL"
 (
 	on execute do (
-		if not keyboard.shiftPressed then ( filein ((getdir #userScripts) + @"\PG.Mxs\PG_SL.ms") )
-		else ( filein ((getdir #userScripts) + @"\PG.Mxs\PG_SL_LAST.ms") )
+		if not keyboard.shiftPressed then ( filein @"D:\GitHub\PG.Ms\PGScriptLuncher\PG_SL.ms" )
+		else ( filein @"D:\GitHub\PG.Ms\PGScriptLuncher\PG_SL_LAST.ms" )
 	)
 )
