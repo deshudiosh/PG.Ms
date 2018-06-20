@@ -1,7 +1,3 @@
-
-
-
-
 try (destroyDialog PGBatchRender) catch()
 
 rollout PGBatchRender "PG Batch Render" width:400 (
@@ -30,8 +26,8 @@ rollout PGBatchRender "PG Batch Render" width:400 (
 		for cam in cams do ( 
 			view = batchRenderMgr.createview cam
 			view.camera = cam
-			view.outputFilename = (dir + "/" + prefix + cam.name + ".jpg")
-			--view.name = cam.name
+			view.outputFilename = (dir + "/" + prefix + "." + cam.name + ".jpg")
+			view.name = cam.name
 		)
 	)
 
@@ -58,13 +54,17 @@ rollout PGBatchRender "PG Batch Render" width:400 (
 	)
 	
 	group "Cameras" (
-	button camsAll "Cameras: All" width:160 height:35 across: 2
-	button camsSelected "Cameras: Selected" width:160 height:35
-	checkbox camsSelOnly height:35 width:35
+	radiobuttons camradio labels:#("ALL", "LIST:") columns:1 across:2
+	multilistbox camlist
+	)
+	group "Create Batch Jobs" (
+	button createJobs "Create !!!" width:160 height:35
 	)
 	
+	on camsAll pressed do ( br dir prefix )
+	
 	fn dotNetUpdate = (
-		local font = dotnetobject "System.Drawing.Font" "Arial" 12
+		local font = dotnetobject "System.Drawing.Font" "Arial" 10
 		local bkgCol = (colorman.getcolor #background * 255) as color
 		local textalign = (dotNetClass "System.Drawing.ContentAlignment").MiddleCenter
 		local backColor = (dotNetClass "System.Drawing.Color").fromArgb bkgCol.r bkgCol.g bkgCol.b
