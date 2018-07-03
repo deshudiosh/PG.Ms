@@ -1,6 +1,6 @@
 try (destroyDialog PGBatchRender) catch()
 
-rollout PGBatchRender "PG Batch Render" width:400 (
+rollout PGBatchRender "PG Batch Render" width:600 (
 	-- load from file on open
 	local dir = maxFilePath
 	local prefix = (getFilenameFile maxFileName)
@@ -44,13 +44,10 @@ rollout PGBatchRender "PG Batch Render" width:400 (
 			
 	group "Save path:" (
 	dotNetControl dirLabel "Windows.Forms.Label" height:18
-	button dirChoose "Choose Path [...]" across:2 width:160 height:35
-	button dirPaste "Paste from Clipboard" width:160 height:35
 	)
 
 	group "Prefix"(
 	dotNetControl prefixLabel "Windows.Forms.Label" height:20
-	button prefixchange "Change Prefix [...]" width:160 height:35
 	)
 	
 	group "Cameras" (
@@ -61,12 +58,22 @@ rollout PGBatchRender "PG Batch Render" width:400 (
 	button createJobs "Create !!!" width:160 height:35
 	)
 	
-	on camsAll pressed do ( br dir prefix )
+	on dirLabel mouseclick s e do (
+		if e.button == e.button.left do (print "left")
+		if e.button == e.button.right do (print "right")
+	)
+	
+	on prefixLabel mouseclick s e do (
+		prefix = (PGLib.askForStringWithDefault prefix)
+		prefixLabel.text = prefix
+	)
+	
+	on createJobs pressed do ( br dir prefix )
 	
 	fn dotNetUpdate = (
-		local font = dotnetobject "System.Drawing.Font" "Arial" 10
+		local font = dotnetobject "System.Drawing.Font" "Arial" 12
 		local bkgCol = (colorman.getcolor #background * 255) as color
-		local textalign = (dotNetClass "System.Drawing.ContentAlignment").MiddleCenter
+		local textalign = (dotNetClass "System.Drawing.ContentAlignment").MiddleLeft
 		local backColor = (dotNetClass "System.Drawing.Color").fromArgb bkgCol.r bkgCol.g bkgCol.b
 		local foreColor = (dotNetClass "System.Drawing.Color").fromArgb 255 255 255
 
@@ -76,11 +83,6 @@ rollout PGBatchRender "PG Batch Render" width:400 (
 		dirLabel.foreColor = prefixLabel.foreColor = foreColor
 		
 		dirLabel.text = dir
-		prefixLabel.text = prefix
-	)
-	
-	on prefixChange pressed do (
-		prefix = (PGLib.askForStringWithDefault prefix)
 		prefixLabel.text = prefix
 	)
 	
