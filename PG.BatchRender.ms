@@ -5,12 +5,13 @@ rollout PGBatchRender "PG Batch Render" width:600 (
 	local savepath
 	
 	struct pathbuilder (
-		dir, filename, ext,
+		dir, file, ext,
 		fn parse p = (
-			print "yyy"
-			print p
+			dir = getFilenamePath p
+			file = getFilenameFile p 
+			ext = getFilenameType p
 		),
-		fn getDisplayPath = (dir+filename+".###"+ext)
+		fn getDisplayPath = (dir+file+".###"+ext)
 	)
 	
 	---------------------------------------------------------------------------------------
@@ -30,7 +31,10 @@ rollout PGBatchRender "PG Batch Render" width:600 (
 	on pathLabel mouseclick s e do (
 		if e.button == e.button.left do (
 			r = PGLib.saveFileDialog()
-			if r != undefined do savepath.parse r
+			if r != undefined do (
+				savepath.parse r
+				pathLabel.text = savepath.getDisplayPath()
+			)
 		)
 		if e.button == e.button.right do (print "right")
 	)
@@ -57,10 +61,8 @@ rollout PGBatchRender "PG Batch Render" width:600 (
 				
 		savepath = pathbuilder()
 		savepath.dir = maxFilePath
- 	 	savepath.filename = getFilenameFile maxFileName
+ 	 	savepath.file = getFilenameFile maxFileName
 	 	savepath.ext = ".jpg"
-		
-		print savepath
 		
 		dotNetUpdate()
 	)
