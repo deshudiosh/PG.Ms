@@ -1,53 +1,22 @@
 try (destroyDialog PGBatchRender) catch()
 
 rollout PGBatchRender "PG Batch Render" width:600 (
-	-- load from file on open
-	local dir = maxFilePath
-	local prefix = (getFilenameFile maxFileName)
 	
-	fn closeBRdialog = (
-		t=windows.getChildHWND 0 "Batch Render" 
-		if t != undefined do windows.sendMessage t[1] 0x0112 0xF060 0
+	local savepath
+	
+	struct pathbuilder (
+		dir, filename, ext,
+		fn parse p = (
+			print "yyy"
+			print p
+		),
+		fn getDisplayPath = (dir+filename+".###"+ext)
 	)
-
-	fn openBRdialog = (
-		actionMan.executeAction -43434444 "4096"
-	)
-
-	fn compareNames str1 str2 = stricmp str1.name str2.name
-
-	fn removeViews = ( while batchRenderMgr.numviews > 0 do ( batchRenderMgr.deleteview 1 ) )
-
-	fn createBatchViews dir prefix = (
-		
-		cams = for cam in Cameras where (classof cam != Targetobject) collect cam
-		qSort cams compareNames
-		
-		for cam in cams do ( 
-			view = batchRenderMgr.createview cam
-			view.camera = cam
-			view.outputFilename = (dir + "/" + prefix + "." + cam.name + ".jpg")
-			view.name = cam.name
-		)
-	)
-
-	fn br dir prefix = (
-		closeBRDialog()
-		removeViews()
-		createBatchViews dir prefix
-		openBRdialog()
-	)
-
 	
 	---------------------------------------------------------------------------------------
 	
-			
 	group "Save path:" (
-	dotNetControl dirLabel "Windows.Forms.Label" height:18
-	)
-
-	group "Prefix"(
-	dotNetControl prefixLabel "Windows.Forms.Label" height:20
+	dotNetControl pathLabel "Windows.Forms.Label" height:18
 	)
 	
 	group "Cameras" (
@@ -58,17 +27,15 @@ rollout PGBatchRender "PG Batch Render" width:600 (
 	button createJobs "Create !!!" width:160 height:35
 	)
 	
-	on dirLabel mouseclick s e do (
-		if e.button == e.button.left do (print "left")
+	on pathLabel mouseclick s e do (
+		if e.button == e.button.left do (
+			r = PGLib.saveFileDialog()
+			if r != undefined do savepath.parse r
+		)
 		if e.button == e.button.right do (print "right")
 	)
 	
-	on prefixLabel mouseclick s e do (
-		prefix = (PGLib.askForStringWithDefault prefix)
-		prefixLabel.text = prefix
-	)
-	
-	on createJobs pressed do ( br dir prefix )
+	on createJobs pressed do ( )
 	
 	fn dotNetUpdate = (
 		local font = dotnetobject "System.Drawing.Font" "Arial" 12
@@ -77,17 +44,24 @@ rollout PGBatchRender "PG Batch Render" width:600 (
 		local backColor = (dotNetClass "System.Drawing.Color").fromArgb bkgCol.r bkgCol.g bkgCol.b
 		local foreColor = (dotNetClass "System.Drawing.Color").fromArgb 255 255 255
 
-		dirLabel.font = prefixLabel.font = font
-		dirLabel.textalign = prefixLabel.textalign = textAlign
-		dirLabel.backColor = prefixLabel.backColor = backColor
-		dirLabel.foreColor = prefixLabel.foreColor = foreColor
+		pathLabel.font = font
+		pathLabel.textalign = textAlign
+		pathLabel.backColor = backColor
+		pathLabel.foreColor = foreColor
 		
-		dirLabel.text = dir
-		prefixLabel.text = prefix
+ 		pathLabel.text = savepath.getDisplayPath()
 	)
 	
 	on PGBatchRender open do (
 		filein "PG.Lib.ms"
+				
+		savepath = pathbuilder()
+		savepath.dir = maxFilePath
+ 	 	savepath.filename = getFilenameFile maxFileName
+	 	savepath.ext = ".jpg"
+		
+		print savepath
+		
 		dotNetUpdate()
 	)
 	

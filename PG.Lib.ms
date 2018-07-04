@@ -12,5 +12,28 @@ struct PGLib (
 		if not okclicked do insetedtext = txt
 		
 		insetedtext		
+	),
+	
+	--RETURN path or undefined
+	fn saveFileDialog title:undefined = (
+		dno = dotNetObject "System.Windows.Forms.SaveFileDialog"
+		if title != undefined do dno.title = title
+		r = dno.showdialog()
+		
+ 		if (r != r.OK) then val = undefined
+ 		else val = dno.filename
+		val
+	),
+	
+	fn setData id data = (
+		setAppData rootnode id data
+	),
+	
+	fn getData id = (
+		getAppData rootnode id
 	)
 )
+
+global PGLib = PGLib()
+
+-- clearlistener()
