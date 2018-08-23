@@ -31,6 +31,11 @@ struct PGLib (
 	
 	fn getData id = (
 		getAppData rootnode id
+	),
+	
+	fn tempFile filename = (
+		p = pathConfig.GetDir #temp
+		p + "\\" + filename
 	)
 )
 

@@ -4,14 +4,13 @@ registerMacros function
 autoupdate?
 
 
+
 #DWG Cleaner
 - select/hide layer by sel objects
 - move layers to one main layer "DWG"
 - boundary shape cutout splines
 - import button inside script (can distinct which objects were imported thanks to this -> all obejcts - objects before selction = new objects)
 - delete "blocks" button
-
-
 
 
 # section auto update:
@@ -22,7 +21,7 @@ autoupdate?
 
 # world/local/pick reference coordinate switch
 
-# DWG cleaning tool: Trim subsplines (from selection) to the selected rectangle 
+
 
 # 4pointalign 2d (f.e. top view)
 # 4pointalign 
