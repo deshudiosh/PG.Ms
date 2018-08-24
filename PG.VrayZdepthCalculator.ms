@@ -1,85 +1,3 @@
-fn getVrayZdepth = (
-	
-vr=renderers.current
-	
--- SAVE PRESET HERE
-
-
--- SET SETTINGS
-res = 2000
-renderwidth = res
-renderheight = res
-	
-vr.output_width = renderwidth
-vr.output_height = renderheight
-vr.output_on = true
-
---vfbControl()
-
--- RENDER ELEMENT CONSTS	
-vraysamplername = "DSH.Distances"
-re = maxOps.GetCurRenderElementMgr()
-
---REMOVE OLD RENDER ELEMENT IF IT THERE
-for i = 1 to re.NumRenderElements() do (
-	element = re.GetRenderElement (i-1)
-	if element.elementName == vraysamplername do re.RemoveRenderElement element
-)
-
--- ADD VRAYSAMPLER ELEMENT
--- type:0 - Point
--- coord_system:2 - Camera
-re.addRenderElement (VRaySamplerInfo elementname:vraysamplername type:0 coord_system:2 filterOn:false)
-
---bm = bitmap vr.output_width vr.output_height
---render camera:$Camera001 vfb:false progressbar:true to:bm
-
-max quick render
-
-vraysamplerbitmap
-
-for i = 1 to vrayVFBGetNumChannels() do (
-	if (vrayVFBGetChannelName i) == vraysamplername do (
-		vraysamplerbitmap = vrayVFBGetChannelBitmap i
-	)
-)
-	
-distances = #()
-	
-progressstart "Calculating distances..."
-	
-for y = 0 to vr.output_height-1 do (
-	progressupdate (100.0 * y / vr.output_height)
-	
-	for x = 0 to vr.output_width-1 do (
-		val = (getPixels vraysamplerbitmap [y, x] 1 linear:true)[1]
-		
-		valz = val.blue *-1.0 / 256.0
-		--print ("x: " + x as string + " y: " + y as string + " valz: " + valz as string)
-		
-		if valz > 0.0 do append distances valz
-	)
-)
-
-progressend()
-
-sort distances
-$Camera001.nearrange = distances[1]
-$Camera001.farrange = distances[distances.count]
-
-
--- RENDER DISPLACEMENT
--- zname = "DSH.Displacement"
--- for i = 1 to re.NumRenderElements() do (
--- 	element = re.GetRenderElement (i-1)
--- 	if element.elementName == zname do re.RemoveRenderElement element
--- )
--- re.addRenderElement (VRayZdepth elementname:zname zdepth_min:distances[1] zdepth_max:distances[distances.count] clamp_zdepth:false filterOn:false)
-
--- LOAD PRESET HERE
-
-)
-
 fn renderSamplerPass = (
 	re = maxOps.GetCurRenderElementMgr()
 
@@ -94,17 +12,48 @@ fn renderSamplerPass = (
 
 	max quick render
 	vfbControl #setchannel 2
-	vfbcontrol #savemultiimage (PGLib.tempFile "vray_depth.exr")
+	vfbcontrol #savemultiimage PGLib.cons.vray_depth_exr
+)
+
+fn calculateWithPyMs = (
+	command = "PyMs.exe vray_depth -o1 \"" + PGLib.cons.vray_depth_exr + "\" -o2 \"" + PGLib.cons.vray_depth_results + "\""
+	hiddendoscommand command startpath:PGLib.cons.pgscripts exitCode:&exitcode prompt:""
+)
+
+fn renderFinalZdepth = (
+	passname = "PG.VrayZdepthCalc"
+	
+	re = maxOps.GetCurRenderElementMgr()
+	re.RemoveAllRenderElements() 
+	re.addRenderElement (VRayZdepth elementname:passname \
+		zdepth_min:(PGLib.vrayDepthMin()) \
+		zdepth_max:(PGLib.vrayDepthMax()) \
+		filterOn:false)
+-- 	
+-- 	  .enabled : boolean
+--   .filterOn : boolean
+--   .atmosphereOn : boolean
+--   .shadowOn : boolean
+--   .elementName : string
+--   .bitmap : bitmap
+--   .vrayVFB : boolean
+--   .deep_output : boolean
+--   .zdepth_use_camera_clip_boudaries : boolean
+--   .zdepth_min : worldUnits
+--   .zdepth_max : worldUni
+--   .clamp_zdepth : boolean
+--   .invert_zdepth : boolean
+
+	max quick render
+	vfbControl #setchannel 2
 )
 
 fn vrayZdepthCalculator cam = (
 	-- save current render settings
 	-- setup for fast sampler info pass render
-	-- render pass, and save rgba 32bit exr
 	renderSamplerPass()
-	-- pass it to PyMs.exe
-	-- read values and pass them to new vray zdepth pass
-	-- renderer that pass
+	calculateWithPyMs()
+	renderFinalZdepth()
 	-- go back to previous render setup
 	-- cleanup
 
@@ -112,5 +61,4 @@ fn vrayZdepthCalculator cam = (
 
 clearlistener()
 filein "PG.Lib.ms"
-vrayZdepthCalculator $Camera001
-
+vrayZdepthCalculator $

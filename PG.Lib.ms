@@ -32,13 +32,19 @@ struct PGLib (
 	fn getData id = (
 		getAppData rootnode id
 	),
-	
-	fn tempFile filename = (
-		p = pathConfig.GetDir #temp
-		p + "\\" + filename
-	)
+		
+	cons = (
+			struct cons ( 
+				pgscripts = (getINIsetting ((pathConfig.GetDir #userMacros) + "\\PG.ini") "PG" "pgscripts"),
+				PyMsExe = this.pgscripts + "PyMs.exe",
+				vray_depth_exr = (pathConfig.GetDir #temp) + "\\vray_depth.exr",
+				vray_depth_results = (pathConfig.GetDir #temp) + "\\vray_depth.ini"
+			)
+	)(),
+			
+	fn vrayDepthMin = ((getINISetting this.cons.vray_depth_results "vray_depth" "min") as number ),
+	fn vrayDepthMax =  ((getINISetting this.cons.vray_depth_results "vray_depth" "max") as number)
 )
 
 global PGLib = PGLib()
-
 -- clearlistener()
