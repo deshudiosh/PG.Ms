@@ -25,38 +25,40 @@ fn renderFinalZdepth = (
 	
 	re = maxOps.GetCurRenderElementMgr()
 	re.RemoveAllRenderElements() 
-	re.addRenderElement (VRayZdepth elementname:passname \
+	zdepthpass = re.addRenderElement (VRayZdepth elementname:passname \
 		zdepth_min:(PGLib.vrayDepthMin()) \
 		zdepth_max:(PGLib.vrayDepthMax()) \
+		deep_output: true \
+		clamp_zdepth: false \
 		filterOn:false)
--- 	
--- 	  .enabled : boolean
---   .filterOn : boolean
---   .atmosphereOn : boolean
---   .shadowOn : boolean
---   .elementName : string
---   .bitmap : bitmap
---   .vrayVFB : boolean
---   .deep_output : boolean
---   .zdepth_use_camera_clip_boudaries : boolean
---   .zdepth_min : worldUnits
---   .zdepth_max : worldUni
---   .clamp_zdepth : boolean
---   .invert_zdepth : boolean
 
 	max quick render
 	vfbControl #setchannel 2
 )
 
+fn setupFastRender = (
+	vr = renderers.current
+	
+	vr.gi_on = false
+	vr.imageSampler_type_new = 0
+	vr.twoLevel_baseSubdivs = 1
+	vr.twoLevel_fineSubdivs = 1
+	
+	vfbControl #bloom false
+	vfbControl #glare false
+)
+
 fn vrayZdepthCalculator cam = (
 	-- save current render settings
+	renderpresets.saveall 0 PGLib.cons.vray_depth_renderpreset
 	-- setup for fast sampler info pass render
+	setupFastRender()
 	renderSamplerPass()
 	calculateWithPyMs()
 	renderFinalZdepth()
 	-- go back to previous render setup
+-- 	renderpresets.loadall 0 PGLib.cons.vray_depth_renderpreset
 	-- cleanup
-
 )
 
 clearlistener()

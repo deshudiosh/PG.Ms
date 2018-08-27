@@ -38,7 +38,8 @@ struct PGLib (
 				pgscripts = (getINIsetting ((pathConfig.GetDir #userMacros) + "\\PG.ini") "PG" "pgscripts"),
 				PyMsExe = this.pgscripts + "PyMs.exe",
 				vray_depth_exr = (pathConfig.GetDir #temp) + "\\vray_depth.exr",
-				vray_depth_results = (pathConfig.GetDir #temp) + "\\vray_depth.ini"
+				vray_depth_results = (pathConfig.GetDir #temp) + "\\vray_depth.ini",
+				vray_depth_renderpreset = (pathConfig.GetDir #temp) + "\\vray_depth.rps"
 			)
 	)(),
 			
