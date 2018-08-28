@@ -1,30 +1,13 @@
 fn getScripts = (
-	
-	-- gather script files
-	-- start looking in default location
-	scripts = getFiles ((getdir #userScripts) + "\\PGScripts\\PG.*.ms")
-	
-	scripts += (getFiles "D:\GitHub\PG.Ms\PG.*.ms")
-	
-	-- and add scripts from custom locations
-	for url in (getINISetting ((getdir #userScripts) + @"\PGScripts\PG_SL.ini")) do (
-		scripts += (getFiles (url + "PG.*.ms"))
-	)
-	
-	--url = ((getdir #userScripts) + "\\PGScripts\\PG.*.ms")
-	--scripts = getFiles url
-	scripts
+	scripts = getFiles (PGLib.cons.pgscripts + "\\PG.*.ms")
 )
 
-fn btnHandler scriptUrl rightclick= (
+fn btnHandler scriptFile rightclick= (
 	-- try lunching script and catch errors if any
 	try (
-		fileIn scriptUrl
+		fileIn scriptFile
 		
-		-- store last lunched script
-		url = ((getdir #userScripts) + @"\PGScripts\PG_SL_LAST.ini")
-		try (deleteFile url) catch()
-		setINISetting url scriptUrl "empty" "value"
+		PGLib.setLastScript scriptFile
 	) 
 	catch ( 
 		messagebox ("Error thrown:\n\n" + (getCurrentException()) + "\n\nIn Script:\n\n" + filenameFromPath scriptUrl) title:"Error Occurred"
@@ -35,6 +18,11 @@ fn btnHandler scriptUrl rightclick= (
 )
 
 fn getRollout = (
+	try (destroyDialog PGSL) catch()
+	
+	-- load PGLib
+	fileIn (pathConfig.removePathLeaf (getThisScriptFilename()) + "\\PG.Lib.ms")
+	
 	rci = rolloutCreator "PGSL" "PG Scripts Lister"
 	rci.begin()
 
@@ -67,8 +55,6 @@ fn getRollout = (
 	rci.end()
 )
 
-clearListener()
-try (destroyDialog PGSL) catch()
 global PGSL = getRollout()
 createDialog PGSL
 

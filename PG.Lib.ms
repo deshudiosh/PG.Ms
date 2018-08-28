@@ -34,8 +34,10 @@ struct PGLib (
 	),
 		
 	cons = (
-			struct cons ( 
-				pgscripts = (getINIsetting ((pathConfig.GetDir #userMacros) + "\\PG.ini") "PG" "pgscripts"),
+			struct cons (
+				ini = ((pathConfig.GetDir #userMacros) + "\\PG.ini"),
+				pgscripts = (getINIsetting ini "PG" "pgscripts"),
+				last_script = (getINIsetting ini "PG" "lastscript"),
 				PyMsExe = this.pgscripts + "PyMs.exe",
 				vray_depth_exr = (pathConfig.GetDir #temp) + "\\vray_depth.exr",
 				vray_depth_results = (pathConfig.GetDir #temp) + "\\vray_depth.ini",
@@ -44,7 +46,8 @@ struct PGLib (
 	)(),
 			
 	fn vrayDepthMin = ((getINISetting this.cons.vray_depth_results "vray_depth" "min") as number ),
-	fn vrayDepthMax =  ((getINISetting this.cons.vray_depth_results "vray_depth" "max") as number)
+	fn vrayDepthMax =  ((getINISetting this.cons.vray_depth_results "vray_depth" "max") as number),
+	fn setLastScript scriptPath = (setINISetting this.cons.ini "PG" "lastscript" scriptPath)
 )
 
 global PGLib = PGLib()
