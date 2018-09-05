@@ -6,7 +6,7 @@ macroScript PG_SL
 	on execute do (
 		pgscripts = (getINIsetting ((pathConfig.GetDir #userMacros) + "\\PG.ini") "PG" "pgscripts")
 		
-		if not keyboard.shiftPressed then ( filein (pgscripts + "PG.ScriptLuncher.ms") )
-		else ( filein (pgscripts + "PG.ScriptLuncherLast.ms") )
+		if not keyboard.shiftPressed then ( filein (pgscripts + "PG_ScriptLuncher.ms") )
+		else ( filein (pgscripts + "PG_ScriptLuncherLast.ms") )
 	)
 )
