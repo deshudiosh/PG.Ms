@@ -16,8 +16,13 @@ fn renderSamplerPass = (
 )
 
 fn calculateWithPyMs = (
+	start = timeStamp()
+	
 	command = "PyMs.exe vray_depth -o1 \"" + PGLib.cons.vray_depth_exr + "\" -o2 \"" + PGLib.cons.vray_depth_results + "\""
 	hiddendoscommand command startpath:PGLib.cons.pgscripts exitCode:&exitcode prompt:""
+	
+	end = timeStamp()
+	format "Finding zdepth min/max took % seconds\n" ((end - start) / 1000.0)
 )
 
 fn renderFinalZdepth = (
