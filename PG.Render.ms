@@ -23,9 +23,16 @@ struct PGRenderDef (
 	),
 	
 	fn createLock = (
+		folder = getFilenamePath outputFile
+		file = getFilenameFile outputFile
+		createFile (folder+file+".lock")
+	),
+	
+	fn removeLock = (
 	),
 	
 	fn actualRender = (
+		this.createLock()
 		render \
 			frame:PGRender.nextFrame \
 			outputfile:PGRender.outputFile \
@@ -39,11 +46,11 @@ struct PGRenderDef (
 	fn postRender = (
 		print ">> #postRender"
 		
+		this.removeLock()
+		
 		this.findNextFrame()
 		
 		if this.nextFrame != undefined then (
-			this.createLock()
-			
 			fn perform sender evt = (
 				sender.stop() -- one tick only
 				dotnet.removeAllEventHandlers sender
