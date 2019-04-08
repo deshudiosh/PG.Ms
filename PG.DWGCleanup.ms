@@ -111,11 +111,11 @@ rollout DWGCleanup "DWGCleanup by Pawel Grzelak" width:360 (
 	checkbox cbRemoveMaterials "2. Remove Materials" checked:true
 	checkbox cbWireColors "3. Assign Wire Color From Layer Color" checked:true
 	local drawingCbName = "4. Move Splines and Meshes To Separate Layer: '" + DWGCleanupDwgLayerName + "'"
-	checkbox cbMoveDrawing drawingCbName checked:true
+	checkbox cbMoveDrawing drawingCbName checked:false
 	local blocksCbName = "5. Move Blocks/Style Parent Objects To Separate Layer: '" + DWGCleanupBlocksLayerName + "'"
 	checkbox cbMoveBlocks blocksCbName checked:true
 	checkbox cbRemoveEmpty "6. Remove Empty Layers" checked:true
-	checkbox cbRemoveHidden "7. Remove Hidden Layers and their Nodes" checked:true
+	checkbox cbRemoveHidden "7. Remove Disabled Layers and their Nodes" checked:true
 	
 	imgTag s1 bitmap:separator align:#center offset:[0, space]
 	

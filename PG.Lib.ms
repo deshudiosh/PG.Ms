@@ -51,4 +51,5 @@ struct PGLib (
 )
 
 global PGLib = PGLib()
+PGLib
 -- clearlistener()

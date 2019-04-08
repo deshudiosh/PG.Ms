@@ -1,4 +1,4 @@
-fn getScripts = (
+fn getScripts = (	
 	scripts = getFiles (PGLib.cons.pgscripts + "\\PG.*.ms")
 )
 
@@ -20,43 +20,47 @@ fn btnHandler scriptFile rightclick= (
 fn getRollout = (
 	try (destroyDialog PGSL) catch()
 	
-	-- load PGLib
-	fileIn (pathConfig.removePathLeaf (getThisScriptFilename()) + "\\PG.Lib.ms")
-	
-	rci = rolloutCreator "PGSL" "PG Scripts Lister"
-	rci.begin()
+	try(
+		rci = rolloutCreator "PGSL" "PG Scripts Lister"
+		rci.begin()
 
-	local scripts = getScripts()
-	
-	--calculate btn width based on longest name
-	local maxWidth = 0
-	for s in scripts do (
-		local n = (filterString s ".")
-		maxWidth = amax #((GetTextExtent (n[2] + " " + n[3])).x + 20, maxWidth)
-	)
-	
-	-- add buttons
-	for i = 1 to scripts.count do (
+		-- load PGLib
+		fileIn (pathConfig.removePathLeaf (getThisScriptFilename()) + "\\PG.Lib.ms")
 		
-		sNameArr = (filterString scripts[i] ".")
+		local scripts = getScripts()
 		
-		btnLabel = sNameArr[2] + " " + sNameArr[3]
-				
-		controlname = ("btn" + i as string)
-		widthStr = "width:" + maxWidth as string
+		--calculate btn width based on longest name
+		local maxWidth = 0
+		for s in scripts do (
+			local n = (filterString s ".")
+			maxWidth = amax #((GetTextExtent (n[2] + " " + n[3])).x + 20, maxWidth)
+		)
 		
-		rci.addControl #button controlname btnLabel paramStr:widthStr
+		-- add buttons
+		for i = 1 to scripts.count do (
+			
+			sNameArr = (filterString scripts[i] ".")
+			
+			btnLabel = sNameArr[3]
+			
+			controlname = ("btn" + i as string)
+			widthStr = "width:" + maxWidth as string
+			
+			rci.addControl #button controlname btnLabel paramStr:widthStr
 
-		handlerStr = "btnHandler @" + scripts[i] + "@ "
-		rci.addHandler controlname #pressed codestr:(handlerStr + "false") filter:on
-		rci.addHandler controlname #rightclick codestr:(handlerStr + "true") filter:on
-	)
-	
-	rci.end()
+			handlerStr = "btnHandler @" + scripts[i] + "@ "
+			rci.addHandler controlname #pressed codestr:(handlerStr + "false") filter:on
+			rci.addHandler controlname #rightclick codestr:(handlerStr + "true") filter:on
+		)
+		
+		rci.end()
+	) catch()
 )
 
 global PGSL = getRollout()
-createDialog PGSL
+--try catch is a workaround for not intialized PGLib (no idea why doesnt work on first execution)
+try( createDialog PGSL width:250) catch()
+
 
 
 
