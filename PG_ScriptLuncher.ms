@@ -57,9 +57,9 @@ fn getRollout = (
 	) catch()
 )
 
-global PGSL = getRollout()
 --try catch is a workaround for not intialized PGLib (no idea why doesnt work on first execution)
-try( createDialog PGSL width:250) catch()
+global PGSL = getRollout()
+try( createDialog PGSL width:250 ) catch ()
 
 
 

@@ -32,7 +32,7 @@ fn nextToEachOther = (
 	)
 	
 	
-	margin = 50
+	margin = 30
 	lastX = 0
 	
 	for listIdx = 1 to lists.count do (
@@ -60,7 +60,7 @@ fn nextToEachOther = (
 		
 		
 		-- TO NAPISZ JAKOS KURWA SENSOWNIE
-		lastX = lastX + 120
+		lastX = lastX + 500
 	)
 	
 		
