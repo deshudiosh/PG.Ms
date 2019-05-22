@@ -10,7 +10,7 @@ fn nextToEachOther = (
 	qSort objs compareNames
 	
 	lists = #()
-	similarNameLength = 5
+	similarNameLength = 1
 	lastname = ""
 	
 	-- sort objs by name similarity, and add to arrays
@@ -32,7 +32,7 @@ fn nextToEachOther = (
 	)
 	
 	
-	margin = 30
+	margin = 2
 	lastX = 0
 	
 	for listIdx = 1 to lists.count do (
@@ -60,7 +60,7 @@ fn nextToEachOther = (
 		
 		
 		-- TO NAPISZ JAKOS KURWA SENSOWNIE
-		lastX = lastX + 500
+		lastX = lastX + 50
 	)
 	
 		
