@@ -1,6 +1,15 @@
 struct pgcamselect (
 	cams,
 	
+	-- this sorting doesnt work lol
+	fn sortCamerasByName c1 c2 = (
+		which = c1.name > c2.name
+		case of (
+			(which): 1
+			default: 0
+		)
+	),
+		
 	fn dialog_size_update list = (
 		num_items = list.items.count
 		list.height = list.itemheight * (num_items+1)
@@ -15,8 +24,6 @@ struct pgcamselect (
 	),
 	
 	fn list_populate list = (
-		cams = for cam in cameras where (superclassof cam == Camera ) collect cam
-	
 		for i =  1 to cams.count do
   		(
   			--label_item = dotNetObject "System.Windows.Forms.Label"
@@ -44,34 +51,43 @@ struct pgcamselect (
 	),
 	
 	fn run = (
-		try (destroydialog dial) catch()
-		rollout dial "boardless dialog" width:200 height:200
-		(
-			
-			dotNetControl list "System.Windows.Forms.ListBox" align:#center height:200 width:200 pos:[0, 0]
-			timer t interval:1 active:True
-			
-			on t tick do
+		try (destroydialog pgcsdial) catch()
+		
+		cams = for cam in cameras where (superclassof cam == Camera ) collect cam
+		--qsort cams sortCamerasByName
+		
+		if cams.count > 0 do (			
+			rollout pgcsdial "boardless dialog" width:200 height:200
 			(
-				mp = mouse.screenpos - [dial.width, dial.height/2]
-				if (GetDialogPos dial) != mp do SetDialogPos dial mp
-			)
-			
-			on list mousewheel evnt do (
-				delta = if evnt.delta > 0 then -1 else 1
-				list_scroll list delta
-			)
-			
-			on dial open do (
-				list_init list
-				list_populate list
-				list.refresh()
-				list.focus()
 				
-				dial.height = list.height
+				dotNetControl list "System.Windows.Forms.ListBox" align:#center height:200 width:200 pos:[0, 0]
+				timer t interval:1 active:True
+				
+				on t tick do (
+					mp = mouse.screenpos - [pgcsdial.width-3, pgcsdial.height/2]
+					SetDialogPos pgcsdial mp
+				)
+				
+				on list mousewheel evnt do (
+					delta = if evnt.delta > 0 then -1 else 1
+					list_scroll list delta
+				)
+				
+				on list mousedown evnt do (
+					destroydialog pgcsdial
+				)
+				
+				on pgcsdial open do (
+					list_init list
+					list_populate list
+					list.refresh()
+					list.focus()
+					
+					pgcsdial.height = list.height
+				)
 			)
+			createdialog pgcsdial style:#() modal:True
 		)
-		createdialog dial style:#() modal:True
 	)
 	
 )
