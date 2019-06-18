@@ -1,14 +1,9 @@
 struct pgcamselect (
+	--used to store camera array
 	cams,
-	
-	-- this sorting doesnt work lol
-	fn sortCamerasByName c1 c2 = (
-		which = c1.name > c2.name
-		case of (
-			(which): 1
-			default: 0
-		)
-	),
+	previous_camera,
+		
+	fn compareNames obj1 obj2 = stricmp obj1.name obj2.name,
 		
 	fn dialog_size_update list = (
 		num_items = list.items.count
@@ -54,7 +49,7 @@ struct pgcamselect (
 		try (destroydialog pgcsdial) catch()
 		
 		cams = for cam in cameras where (superclassof cam == Camera ) collect cam
-		--qsort cams sortCamerasByName
+		qsort cams compareNames
 		
 		if cams.count > 0 do (			
 			rollout pgcsdial "boardless dialog" width:200 height:200
@@ -74,16 +69,37 @@ struct pgcamselect (
 				)
 				
 				on list mousedown evnt do (
+					-- if rightclick, select camera and activate modify panel
+					active_cam = getActiveCamera()
+					if evnt.button == evnt.button.right and active_cam != undefined do (
+						select active_cam
+						max modify mode
+					)
+					
+					-- any mouse key closes dialog
 					destroydialog pgcsdial
 				)
 				
+				on list keydown evnt do (
+					if evnt.keycode == evnt.keycode.c do destroydialog pgcsdial
+				)
+				
 				on pgcsdial open do (
+					previous_camera = getActiveCamera()
+					
 					list_init list
 					list_populate list
 					list.refresh()
 					list.focus()
 					
 					pgcsdial.height = list.height
+				)
+				
+				-- executed on ESC due to modal:True
+				-- intercepts ESC keystrokes so escape-key logic gotta be coded here
+				on pgcsdial close do (
+					-- revert previous camera if there was one
+					if keyboard.escPressed and previous_camera != undefined do viewport.setCamera previous_camera
 				)
 			)
 			createdialog pgcsdial style:#() modal:True
@@ -92,6 +108,7 @@ struct pgcamselect (
 	
 )
 
+clearlistener()
 pgcs = pgcamselect()
 pgcs.run()
 
