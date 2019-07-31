@@ -48,6 +48,12 @@ struct pgcamselect (
 	fn run = (
 		try (destroydialog pgcsdial) catch()
 		
+		-- If selected object if camera...
+		if superclassof selection[1] == Camera do (
+			viewport.setCamera selection[1]
+			return ""
+		)
+		
 		cams = for cam in cameras where (superclassof cam == Camera ) collect cam
 		qsort cams compareNames
 		
