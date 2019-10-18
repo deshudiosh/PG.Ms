@@ -1,47 +1,42 @@
-struct PGSectionsStruct(
-	sectionObjs = #(), sectionObj, topoObj,
+struct pgsects(
+	sections = #(),
 	
-	fn findSections = ( sectionObjs = for s in shapes where (classof  s == section) collect s ),
+	fn findSections = (PGSections.sections = for s in shapes where (classof  s == section) collect s ),
 	
 	fn sectionsUpdate = ( 
-		PGSections.findSections()
+		pgsects.findSections()
 		
-		for sect in PGSections.sectionObjs do (
-			origTransform = sect.transform
+		for sect in PGSections.sections do (
 			sect.transform = (rotateZmatrix 0.001) * sect.transform
-			redrawViews() 
-			sect.transform = origTransform
 		)
 	),
 
-	fn deleteTopoHandlers = (
-		deleteAllChangeHandlers id:#PGtopoChange
-	),
+	fn deleteHandlers = ( deleteAllChangeHandlers id:#PGtopoChange ),
+
+	fn geoFilter obj = ( superclassof obj == GeometryClass ),
 	
 	fn run = (
 		try (destroyDialog PGSectionsDial) catch()
 		
-		rollout PGSectionsDial "Section Auto Update" width:200
+		rollout PGSectionsDial "Sections Auto Update" width:200
 		(
-			fn geoFilter obj = ( superclassof obj == GeometryClass )
-						
-			pickButton topoBtn "<<Pick Geometry Object>>" filter:geoFilter			
-		
+			label l "Keep this dialog open\n for realtime updates" height:30 multiline:true
+			pickButton topoBtn "<< Pick geometry... >>" filter:geoFilter width:180 height:25
+			
 			on topoBtn picked obj do (
 				topoBtn.text = obj.name
 				
-				PGSections.deleteTopoHandlers()		
-				when geometry obj changes id:#PGtopoChange do PGSections.sectionsUpdate()
+				pgsects.deleteHandlers()
+				when geometry obj changes id:#PGtopoChange do pgsects.sectionsUpdate()
 			)
-			on PGSectionsDial close do ( PGSections.deleteTopoHandlers() ) 
+			
+			on PGSectionsDial close do pgsects.deleteHandlers()
 		)
 		
 		createDialog PGSectionsDial
-		""
 	)
 	
 )
 
-
-PGSections = PGSectionsStruct()
+PGSections = pgsects()
 PGSections.run()
