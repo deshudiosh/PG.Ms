@@ -1,42 +1,44 @@
-struct pgsects(
-	sections = #(),
-	
-	fn findSections = (PGSections.sections = for s in shapes where (classof  s == section) collect s ),
-	
-	fn sectionsUpdate = ( 
-		pgsects.findSections()
-		
-		for sect in PGSections.sections do (
-			sect.transform = (rotateZmatrix 0.001) * sect.transform
-		)
-	),
+(
+	local PGSections
 
-	fn deleteHandlers = ( deleteAllChangeHandlers id:#PGtopoChange ),
-
-	fn geoFilter obj = ( superclassof obj == GeometryClass ),
-	
-	fn run = (
-		try (destroyDialog PGSectionsDial) catch()
+	struct pgsects(
+		grabbed,
 		
-		rollout PGSectionsDial "Sections Auto Update" width:200
-		(
-			label l "Keep this dialog open\n for realtime updates" height:30 multiline:true
-			pickButton topoBtn "<< Pick geometry... >>" filter:geoFilter width:180 height:25
+		fn sectionsUpdate = ( 
+			sections = for s in shapes where (classof  s == section) collect s
 			
-			on topoBtn picked obj do (
-				topoBtn.text = obj.name
+			for sect in sections do (
+				sect.transform = (rotateZmatrix 0.001) * sect.transform
+			)
+		),
+
+		fn deleteHandlers = ( deleteAllChangeHandlers id:#PGtopoChange ),
+
+		fn geoFilter obj = ( superclassof obj == GeometryClass ),
+		
+		fn run = (
+			try (destroyDialog PGSectionsDial) catch()
+			
+			rollout PGSectionsDial "Sections Auto Update" width:200
+			(
+				label l "Keep this dialog open\n for realtime updates" height:30 multiline:true
+				pickButton topoBtn "<< Pick geometry... >>" filter:geoFilter width:180 height:25
 				
-				pgsects.deleteHandlers()
-				when geometry obj changes id:#PGtopoChange do pgsects.sectionsUpdate()
+				on topoBtn picked obj do (
+					topoBtn.text = obj.name
+					
+					pgsects.deleteHandlers()
+					when geometry obj changes id:#PGtopoChange do pgsects.sectionsUpdate()
+				)
+				
+				on PGSectionsDial close do pgsects.deleteHandlers()
 			)
 			
-			on PGSectionsDial close do pgsects.deleteHandlers()
+			createDialog PGSectionsDial
 		)
 		
-		createDialog PGSectionsDial
 	)
-	
-)
 
-PGSections = pgsects()
-PGSections.run()
+	PGSections = pgsects()
+	PGSections.run()
+)
