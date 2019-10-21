@@ -17,6 +17,20 @@ fn btnHandler scriptFile rightclick= (
 	if not rightclick do try (destroyDialog PGSL) catch()
 )
 
+fn getScriptNameFromPath p = (
+	namepart = (filterString p ".")[3]
+	
+	namestr = namepart[1]
+	
+	for i = 2 to namepart.count do (
+		letter = namepart[i]
+		if letter == toUpper letter do namestr += " " --if capital, add space
+		namestr += letter
+	)
+	
+	namestr
+)
+
 fn getRollout = (
 	try (destroyDialog PGSL) catch()
 	
@@ -39,9 +53,7 @@ fn getRollout = (
 		-- add buttons
 		for i = 1 to scripts.count do (
 			
-			sNameArr = (filterString scripts[i] ".")
-			
-			btnLabel = sNameArr[3]
+			btnLabel = (getScriptNameFromPath scripts[i])
 			
 			controlname = ("btn" + i as string)
 			widthStr = "width:" + maxWidth as string

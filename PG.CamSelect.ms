@@ -48,7 +48,7 @@ struct pgcamselect (
 	fn run = (
 		try (destroydialog pgcsdial) catch()
 		
-		-- If selected object if camera...
+		-- If selected object is camera apply default 3ds max behaviour
 		if superclassof selection[1] == Camera do (
 			viewport.setCamera selection[1]
 			return ""
