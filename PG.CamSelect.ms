@@ -44,7 +44,7 @@ struct pgcamselect (
 		list.selectedindex = idx
 		viewport.setCamera cams[idx+1]
 	),
-	
+		
 	fn run = (
 		try (destroydialog pgcsdial) catch()
 		
@@ -75,11 +75,19 @@ struct pgcamselect (
 				)
 				
 				on list mousedown evnt do (
-					-- if rightclick, select camera and activate modify panel
 					active_cam = getActiveCamera()
+					active_cam_target = active_cam.target
+					-- if rightclick
 					if evnt.button == evnt.button.right and active_cam != undefined do (
-						select active_cam
-						max modify mode
+						-- if SHIFT try selecting target instead
+						if keyboard.shiftPressed and active_cam_target != undefined then (
+							select active_cam_target
+						)
+						-- select camera and activate modify panel
+						else (
+							select active_cam
+							max modify mode
+						)
 					)
 					
 					-- any mouse key closes dialog
@@ -98,7 +106,9 @@ struct pgcamselect (
 					list.refresh()
 					list.focus()
 					
+					-- update dialog height (seems circular, but works)
 					pgcsdial.height = list.height
+					dialog_size_update list
 				)
 				
 				-- executed on ESC due to modal:True
