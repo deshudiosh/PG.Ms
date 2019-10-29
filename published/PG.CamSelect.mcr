@@ -17,7 +17,9 @@ macroScript PG_CamSelect
 			),
 			
 			fn list_init list = (
+				--show list
 				list.multiColumn = false
+				--list.drawmode = list.drawmode.OwnerDrawFixed
 				myColor = (dotNetClass "System.Drawing.Color").fromArgb 160 160 160
 				list.backColor = mycolor
 			),
@@ -25,6 +27,8 @@ macroScript PG_CamSelect
 			fn list_populate list = (
 				for i =  1 to cams.count do
 				(
+					--label_item = dotNetObject "System.Windows.Forms.Label"
+					--label_item.text = i as string
 					label_item = cams[i].name
 					list.Items.add label_item
 				)
@@ -36,6 +40,7 @@ macroScript PG_CamSelect
 			),
 			
 			fn list_scroll list delta = (
+				--show list
 				num_items = list.items.count
 				idx = list.SelectedIndex + delta
 				
@@ -45,9 +50,15 @@ macroScript PG_CamSelect
 				list.selectedindex = idx
 				viewport.setCamera cams[idx+1]
 			),
-			
+				
 			fn run = (
 				try (destroydialog pgcsdial) catch()
+				
+				-- If selected object is camera apply default 3ds max behaviour
+				if superclassof selection[1] == Camera do (
+					viewport.setCamera selection[1]
+					return ""
+				)
 				
 				cams = for cam in cameras where (superclassof cam == Camera ) collect cam
 				qsort cams compareNames
@@ -70,11 +81,19 @@ macroScript PG_CamSelect
 						)
 						
 						on list mousedown evnt do (
-							-- if rightclick, select camera and activate modify panel
 							active_cam = getActiveCamera()
+							active_cam_target = active_cam.target
+							-- if rightclick
 							if evnt.button == evnt.button.right and active_cam != undefined do (
-								select active_cam
-								max modify mode
+								-- if SHIFT try selecting target instead
+								if keyboard.shiftPressed and active_cam_target != undefined then (
+									select active_cam_target
+								)
+								-- select camera and activate modify panel
+								else (
+									select active_cam
+									max modify mode
+								)
 							)
 							
 							-- any mouse key closes dialog
@@ -93,7 +112,9 @@ macroScript PG_CamSelect
 							list.refresh()
 							list.focus()
 							
+							-- update dialog height (seems circular, but works)
 							pgcsdial.height = list.height
+							dialog_size_update list
 						)
 						
 						-- executed on ESC due to modal:True
@@ -108,7 +129,6 @@ macroScript PG_CamSelect
 			)
 			
 		)
-
 		pgcs = pgcamselect()
 		pgcs.run()
 	)

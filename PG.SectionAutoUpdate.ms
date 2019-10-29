@@ -18,7 +18,13 @@
 			))
 		),
 		
+		fn grabbedExistCheck = (
+			grabbed = for s in grabbed where isValidNode s collect s
+		),
+		
 		fn moveGrabbed delta = (
+			grabbedExistCheck()
+			
 			with undo off (
 				for s in grabbed do (
 					deltaval = delta / 10.0
