@@ -76,7 +76,7 @@ struct pgcamselect (
 				
 				on list mousedown evnt do (
 					active_cam = getActiveCamera()
-					active_cam_target = active_cam.target
+					active_cam_target = if active_cam != undefined then active_cam.target else undefined
 					-- if rightclick
 					if evnt.button == evnt.button.right and active_cam != undefined do (
 						-- if SHIFT try selecting target instead
