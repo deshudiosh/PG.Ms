@@ -9,7 +9,7 @@ struct PGSave(
 
 	fn saveAsVersion filepath version = (
 		saveMaxFile filepath saveAsVersion:version useNewFile:true
-		print (maxFileName + " saved as 2014")
+		--print (maxFileName + " saved as 2014")
 	),
 	
 	fn savefn chooselocation version = (
@@ -35,31 +35,45 @@ struct PGSave(
 		cur_version = maxver()
 		old_version = cur_version - 3
 		
-		saveOldStr = old_version as String + " Save"
-		saveOldAsStr = old_version as String + " Save as..." 
-		saveCurStr = cur_version as String + " Save"
-		saveCurAsStr = cur_version as String + " Save as..."
+		saveOldStr = "Save as " + old_version as String
+		saveCurStr = "Save"
+		saveCurAsStr = " Save As..."
 		
 		try (destroyDialog PGSaveRollout) catch()
 		
-		rollout PGSaveRollout "PG.Save" width:240 (
-			button saveOld saveOldStr across:2 width:100 height:30
-			button saveOldAs saveOldAsStr width:100 height:30
-			button saveCur saveCurStr across:2 width:100 height:30
-			button saveCurAs saveCurAsStr width:100 height:30
-
-			on saveOld pressed do (PGS.savefn false PGS.old_version)
-			on saveOldAs pressed do (PGS.savefn true PGS.old_version)
-			on saveCur pressed do (PGS.savefn false PGS.cur_version)
-			on saveCurAs pressed do (PGS.savefn true PGS.cur_version)
+		rollout PGSaveRollout "PG.Save" width:110 (
+			-- dot net control for getting custom shortcuts
+			dotNetControl list "System.Windows.Forms.ListBox" height:0
+			timer t interval:10 active:True
+			
+			button saveCur saveCurStr width:100 height:50
+			button saveCurAs saveCurAsStr width:100 height:50
+			
+			checkbox saveOld saveOldStr align:#center height:20
+			dotNetControl chkbx "System.Windows.Forms.CheckBox"
+			
+			fn saveFn bool = (
+				destroyDialog PGSaveRollout
+				print (if saveOld.checked then PGS.old_version else PGS.cur_version)
+				PGS.savefn bool (if saveOld.checked then PGS.old_version else PGS.cur_version)
+			)			
+			
+			on t tick do ( list.focus() )
+			on list keydown evnt do (
+				if evnt.keycode == evnt.keycode.s do saveFn false
+				if evnt.keycode == evnt.keycode.a do saveFn true
+			)
+			
+			on saveCur pressed do (saveFn false)
+			on saveCurAs pressed do (saveFn true)
 
 			on PGSaveRollout open do (
 				-- if scane not saved, disable save override option
-				if maxFileName.count == 0 do saveOld.enabled = false 
+				if maxFileName.count == 0 do saveCur.enabled = false 
 			)
 		)
 	
-		CreateDialog PGSaveRollout
+		CreateDialog PGSaveRollout modal:True 
 	)
 )
 
