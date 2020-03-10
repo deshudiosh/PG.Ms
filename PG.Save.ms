@@ -1,36 +1,52 @@
-PGSaveVersion = 2014
-try (destroyDialog PGSave) catch()
+struct PGSave(
+	-- get max version as integer which can be used in saveMaxFile -> saveAsVersion parameter
+	-- this is the ugliest shit I've ever written
+	fn maxVer = (
+		("20" + ((maxVersion())[1]/1000-2) as String) as Number
+	),
 
-fn saveAsVersion filepath version = (
-	saveMaxFile filepath saveAsVersion:version useNewFile:true
-	print (maxFileName + " saved as 2014")
-)
-
-rollout PGSave ("Save as max " + PGSaveVersion as String) width:200 (
-	button saveOld "Save" across:2 width:80 height:30
-	button saveAs "Save As..." width:80 height:30
-
-	on saveOld pressed do (
-		saveAsVersion (maxFilePath + maxFileName) PGSaveVersion
-		destroyDialog PGSave
-	)
-	
-	on saveAs pressed do (
-		newpath = (getSaveFileName filename:(maxFilePath + maxFileName))
-		
-		if newpath != undefined do (
-			print "xxx"
-			--check if extension == .max
-			if not ((substring newpath (newpath.count-3) newpath.count) == ".max") do newpath += ".max"
-			saveAsVersion newpath PGSaveVersion
+	fn saveFn old chooseDir:false = (
+		if chooseDir == false then filepath = (maxFilePath + maxFileName)
+		else (
+			filepath = (getSaveFileName filename:(maxFilePath + maxFileName))
 		)
-		destroyDialog PGSave
-	)
+		
+		if filepath != undefined do (		
+			if old == true then (
+				saveMaxFile filepath useNewFile:true saveAsVersion:(maxVer() - 3)
+			) else (
+				saveMaxFile filepath useNewFile:true
+			)
+			pushPrompt (filepath + " SAVED!" + (if old then " (" + (maxVer() - 3) as String  + ")" else ""))
+		)
+		destroyDialog PGSaveRollout
+	),
 
-	on PGSave open do (
-		-- if scane not saved, disable save override option
-		if maxFileName.count == 0 do saveOld.enabled = false 
+	fn run = (
+		try (destroyDialog PGSaveRollout) catch()
+				
+		rollout PGSaveRollout "PG.Save" width:141 (
+			local vers = "old 3ds Max " + (PGS.maxver() - 3) as String
+			
+			button saveBtn "Save" across:2 width:80 height:30 pos:[10,5]
+			button saveAsBtn "as..." width:40 height:30 pos:[91,5]
+			checkbox old vers align:#center
+
+			on saveBtn pressed do (PGS.saveFn old.state)
+			on saveAsBtn pressed do (PGS.saveFn old.state chooseDir:True)
+
+			on PGSaveRollout open do (
+				-- if scane not saved, disable save override option
+				if maxFileName.count == 0 do saveBtn.enabled = false 
+			)
+		)
+	
+		CreateDialog PGSaveRollout
 	)
 )
 
-CreateDialog PGSave
+global PGSaveRollout
+PGS = PGSave()
+PGS.run()
+
+

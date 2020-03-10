@@ -1,14 +1,13 @@
-macroScript PG_SL
+macroScript PG_Save
 	category:"Pawel Grzelak"
-	toolTip:"PG Script Lister"
-	buttonText:"PGSL"
+	toolTip:"PG Save"
+	buttonText:"Save"
 (
 	on execute do (
-		--usualy C:\Users\username\AppData\Local\Autodesk\3dsMax\2017 - 64bit\ENU\usermacros\
 		pgscripts = (getINIsetting ((pathConfig.GetDir #userMacros) + "\\PG.ini") "PG" "pgscripts")
 		
-		if not keyboard.shiftPressed then ( filein (pgscripts + "PG_ScriptLuncher.ms") )
-		else ( filein (pgscripts + "PG_ScriptLuncherLast.ms") )
+		if not keyboard.shiftPressed then ( filein (pgscripts + "PG.Save.ms") )
+		else ()
 		
 		--if keyboard.shiftPressed do print "shift"
 		--if keyboard.escPressed do print "esc"
