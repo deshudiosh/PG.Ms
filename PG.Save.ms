@@ -46,7 +46,7 @@ struct PGSave(
 )
 
 global PGSaveRollout
-PGS = PGSave()
+global PGS = PGSave()
 PGS.run()
 
 
