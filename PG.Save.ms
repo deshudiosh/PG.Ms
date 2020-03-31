@@ -1,3 +1,6 @@
+global PGS
+global PGSaveRollout
+
 struct PGSave(
 	-- get max version as integer which can be used in saveMaxFile -> saveAsVersion parameter
 	-- this is the ugliest shit I've ever written
@@ -26,7 +29,8 @@ struct PGSave(
 		try (destroyDialog PGSaveRollout) catch()
 				
 		rollout PGSaveRollout "PG.Save" width:141 (
-			local vers = "old 3ds Max " + (PGS.maxver() - 3) as String
+			local vers = "old 3ds Max "
+			--vers +=  + (PGS.maxver() - 3) as String  -- why it errors?
 			
 			button saveBtn "Save" across:2 width:80 height:30 pos:[10,5]
 			button saveAsBtn "as..." width:40 height:30 pos:[91,5]
@@ -45,7 +49,6 @@ struct PGSave(
 	)
 )
 
-global PGSaveRollout
 PGS = PGSave()
 PGS.run()
 
