@@ -49,12 +49,7 @@ struct PGSave(
 	)
 )
 
-<<<<<<< HEAD
-global PGSaveRollout
 global PGS = PGSave()
-=======
-PGS = PGSave()
->>>>>>> 1ac5af3be6e17a5166ce11430f973caa7583bd3a
 PGS.run()
 
 
