@@ -76,17 +76,20 @@ struct pgcamselect (
 				
 				on list mousedown evnt do (
 					active_cam = getActiveCamera()
-					active_cam_target = if active_cam != undefined then active_cam.target else undefined
-					-- if rightclick
-					if evnt.button == evnt.button.right and active_cam != undefined do (
-						-- if SHIFT try selecting target instead
-						if keyboard.shiftPressed and active_cam_target != undefined then (
-							select active_cam_target
-						)
-						-- select camera and activate modify panel
-						else (
-							select active_cam
-							max modify mode
+					
+					if superclassof active_cam == Camera do (
+						active_cam_target = if active_cam != undefined then active_cam.target else undefined
+						-- if rightclick
+						if evnt.button == evnt.button.right and active_cam != undefined do (
+							-- if SHIFT try selecting target instead
+							if keyboard.shiftPressed and active_cam_target != undefined then (
+								select active_cam_target
+							)
+							-- select camera and activate modify panel
+							else (
+								select active_cam
+								max modify mode
+							)
 						)
 					)
 					
