@@ -60,8 +60,12 @@ struct pgcamselect (
 		if cams.count > 0 do (			
 			rollout pgcsdial "boardless dialog" width:200 height:200
 			(
-				
-				dotNetControl list "System.Windows.Forms.ListBox" align:#center height:200 width:200 pos:[0, 0]
+				label lb1 "- Scroll to change camera"
+				label lb2 "- Left click to accept"
+				label lb3 "- Right click to select camera object"
+				label lb4 "- Shift + Right click to select cam target"
+				label lb5 "- Esc to cancel"
+				dotNetControl list "System.Windows.Forms.ListBox" align:#center height:200 width:200 pos:[000, 0]
 				timer t interval:1 active:True
 				
 				on t tick do (
@@ -110,8 +114,14 @@ struct pgcamselect (
 					list.focus()
 					
 					-- update dialog height (seems circular, but works)
-					pgcsdial.height = list.height
+					pgcsdial.height = list.height + 80
 					dialog_size_update list
+					
+					lb1.pos = [3, list.height+2]
+					lb2.pos = [3, list.height+17]
+					lb3.pos = [3, list.height+32]
+					lb4.pos = [3, list.height+47]
+					lb5.pos = [3, list.height+62]
 				)
 				
 				-- executed on ESC due to modal:True
