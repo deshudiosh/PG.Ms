@@ -69,7 +69,7 @@ struct pgcamselect (
 				timer t interval:1 active:True
 				
 				on t tick do (
-					mp = mouse.screenpos - [pgcsdial.width-3, pgcsdial.height/2]
+					mp = mouse.screenpos - [pgcsdial.width-10, 10]
 					SetDialogPos pgcsdial mp
 				)
 				
