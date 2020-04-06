@@ -1,3 +1,6 @@
+-- Script developed by Paweł Grzleak
+-- www.pawelgrzelak.com
+
 macroScript PG_CamSelect
 	category:"Pawel Grzelak"
 	tooltip:"Camera Select"
@@ -66,8 +69,12 @@ macroScript PG_CamSelect
 				if cams.count > 0 do (			
 					rollout pgcsdial "boardless dialog" width:200 height:200
 					(
-						
-						dotNetControl list "System.Windows.Forms.ListBox" align:#center height:200 width:200 pos:[0, 0]
+						label lb1 "- Scroll to change camera"
+						label lb2 "- Left click to accept"
+						label lb3 "- Right click to select camera object"
+						label lb4 "- Shift + Right click to select cam target"
+						label lb5 "- Esc to cancel"
+						dotNetControl list "System.Windows.Forms.ListBox" align:#center height:200 width:200 pos:[000, 0]
 						timer t interval:1 active:True
 						
 						on t tick do (
@@ -82,17 +89,20 @@ macroScript PG_CamSelect
 						
 						on list mousedown evnt do (
 							active_cam = getActiveCamera()
-							active_cam_target = active_cam.target
-							-- if rightclick
-							if evnt.button == evnt.button.right and active_cam != undefined do (
-								-- if SHIFT try selecting target instead
-								if keyboard.shiftPressed and active_cam_target != undefined then (
-									select active_cam_target
-								)
-								-- select camera and activate modify panel
-								else (
-									select active_cam
-									max modify mode
+							
+							if superclassof active_cam == Camera do (
+								active_cam_target = if active_cam != undefined then active_cam.target else undefined
+								-- if rightclick
+								if evnt.button == evnt.button.right and active_cam != undefined do (
+									-- if SHIFT try selecting target instead
+									if keyboard.shiftPressed and active_cam_target != undefined then (
+										select active_cam_target
+									)
+									-- select camera and activate modify panel
+									else (
+										select active_cam
+										max modify mode
+									)
 								)
 							)
 							
@@ -113,8 +123,14 @@ macroScript PG_CamSelect
 							list.focus()
 							
 							-- update dialog height (seems circular, but works)
-							pgcsdial.height = list.height
+							pgcsdial.height = list.height + 80
 							dialog_size_update list
+							
+							lb1.pos = [3, list.height+2]
+							lb2.pos = [3, list.height+17]
+							lb3.pos = [3, list.height+32]
+							lb4.pos = [3, list.height+47]
+							lb5.pos = [3, list.height+62]
 						)
 						
 						-- executed on ESC due to modal:True
@@ -129,7 +145,10 @@ macroScript PG_CamSelect
 			)
 			
 		)
+
+		clearlistener()
 		pgcs = pgcamselect()
 		pgcs.run()
+
 	)
 )
