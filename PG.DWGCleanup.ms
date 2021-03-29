@@ -38,8 +38,21 @@
 				progressupdate (100.0 * i / objs.count)
 				
 				obj = objs[i]
-				obj.colorbylayer = false
-				obj.wirecolor = obj.layer.wireColor
+				
+				if obj != undefined do (
+					--search for material diffuse color first, then try layer color
+					diffcol
+					if obj.material != undefined then (
+						if hasProperty obj.material "Metal_Color" do diffcol = obj.material.Metal_Color
+					) else (
+						diffcol = obj.layer.wireColor
+					)
+					
+					if diffcol == undefined do diffcol = gray 
+									
+					obj.colorbylayer = false
+					obj.wirecolor = diffcol
+				)
 			)
 			progressend()
 		)
@@ -113,7 +126,7 @@
 		
 		checkbox cbUnlink "1. Remove Parent/Child linkage" enabled:true checked:true offset:[0, 5]
 		checkbox cbRemoveMaterials "2. Remove Materials" checked:true
-		checkbox cbWireColors "3. Assign Wire Color From Layer Color" checked:true
+		checkbox cbWireColors "3. Assign Wire Color from Material of from Layer Color" checked:true
 		local drawingCbName = "4. Move Splines and Meshes To Separate Layer: '" + DWGCleanupDwgLayerName + "'"
 		checkbox cbMoveDrawing drawingCbName checked:false
 		local blocksCbName = "5. Move Blocks/Style Parent Objects To Separate Layer: '" + DWGCleanupBlocksLayerName + "'"
@@ -133,8 +146,8 @@
 			objs = collectVisibleElementsExceptBlocks()
 			
 			if cbUnlink.checked do unlinkObjects objs
-			if cbRemoveMaterials.checked do removeMaterial objs
 			if cbWireColors.checked do wireColorFromLayer objs
+			if cbRemoveMaterials.checked do removeMaterial objs
 			if cbMoveDrawing.checked do moveToLayer DWGCleanupDwgLayerName objs
 			if cbMoveBlocks.checked do moveBlocksToLayer DWGCleanupBlocksLayerName objects
 			removeLayers cbRemoveEmpty.checked cbRemoveHidden.checked
