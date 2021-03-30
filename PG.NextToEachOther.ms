@@ -60,7 +60,7 @@ fn nextToEachOther = (
 		
 		
 		-- TO NAPISZ JAKOS KURWA SENSOWNIE
-		lastX = lastX + 50
+		lastX = lastX + 100
 	)
 	
 		

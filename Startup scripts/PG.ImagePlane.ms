@@ -88,10 +88,14 @@ fn CreateDropFileHooker forceRecompile:on = if forceRecompile do (
  	global hooker = WindowHooker.createInstance "DropFileHooker"
  	fn onMessageReceived s e =
  	(
- 		--format "here: %\n" e.files
-		createplane (e.files[1])
+		file = e.files[1]
+		type = getFilenameType e.files[1]
 		
- 		if e.files.count > 1 do e.Handled = on
+		if type == ".jpg" or type == ".png" do (
+ 		--format "here: %\n" e.files
+			createplane (e.files[1])
+			if e.files.count > 1 do e.Handled = on
+		)
  	)
  	dotnet.removeAllEventHandlers hooker
  	dotnet.addEventHandler hooker "MessageReceived" onMessageReceived
