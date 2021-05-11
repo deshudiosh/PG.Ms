@@ -41,10 +41,15 @@
 				
 				if obj != undefined do (
 					--search for material diffuse color first, then try layer color
-					diffcol
+					diffcol = undefined
 					if obj.material != undefined then (
+						if hasProperty obj.material "diffuse" do diffcol = obj.material.diffuse
 						if hasProperty obj.material "Metal_Color" do diffcol = obj.material.Metal_Color
-					) else (
+						if hasProperty obj.material "Generic_Color" do diffcol = obj.material.Generic_Color
+					)
+					
+					-- if white or black try to get color from layer
+					if diffcol == undefined or diffcol == (color 0 0 0) or diffcol == (color 255 255 255) then (
 						diffcol = obj.layer.wireColor
 					)
 					
