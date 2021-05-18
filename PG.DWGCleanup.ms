@@ -40,23 +40,30 @@
 				obj = objs[i]
 				
 				if obj != undefined do (
-					--search for material diffuse color first, then try layer color
-					diffcol = undefined
-					if obj.material != undefined then (
-						if hasProperty obj.material "diffuse" do diffcol = obj.material.diffuse
-						if hasProperty obj.material "Metal_Color" do diffcol = obj.material.Metal_Color
-						if hasProperty obj.material "Generic_Color" do diffcol = obj.material.Generic_Color
-					)
+					-- should we even change wire color in the first place?
+					-- if color by layer is on or color is on the excluded list, we should
+					excludedColors = #((color 0 0 0), (color 255 255 255))
+					isExcluded = (findItem excludedColors obj.wirecolor) != 0
 					
-					-- if white or black try to get color from layer
-					if diffcol == undefined or diffcol == (color 0 0 0) or diffcol == (color 255 255 255) then (
-						diffcol = obj.layer.wireColor
+					if obj.colorbylayer == true or isExcluded then (
+						--search for material diffuse color first, then try layer color
+						diffcol = undefined
+						if obj.material != undefined then (
+							if hasProperty obj.material "diffuse" do diffcol = obj.material.diffuse
+							if hasProperty obj.material "Metal_Color" do diffcol = obj.material.Metal_Color
+							if hasProperty obj.material "Generic_Color" do diffcol = obj.material.Generic_Color
+						)
+						
+						-- if white or black try to get color from layer
+						if diffcol == undefined or diffcol == (color 0 0 0) or diffcol == (color 255 255 255) then (
+							diffcol = obj.layer.wireColor
+						)
+						
+						if diffcol == undefined do diffcol = gray
+										
+						obj.colorbylayer = false
+						obj.wirecolor = diffcol
 					)
-					
-					if diffcol == undefined do diffcol = gray 
-									
-					obj.colorbylayer = false
-					obj.wirecolor = diffcol
 				)
 			)
 			progressend()
@@ -144,20 +151,22 @@
 		button btnClean "Cleanup!" width:150 height:40 offset:[0, 5]
 		
 		on btnClean pressed do (
-			print "DWGCleanup - Start!"
-			
-			clearNodeSelection()
-			
-			objs = collectVisibleElementsExceptBlocks()
-			
-			if cbUnlink.checked do unlinkObjects objs
-			if cbWireColors.checked do wireColorFromLayer objs
-			if cbRemoveMaterials.checked do removeMaterial objs
-			if cbMoveDrawing.checked do moveToLayer DWGCleanupDwgLayerName objs
-			if cbMoveBlocks.checked do moveBlocksToLayer DWGCleanupBlocksLayerName objects
-			removeLayers cbRemoveEmpty.checked cbRemoveHidden.checked
-			
-			print "DWGCleanup - Finished!"
+			undo "DWGCleanup - Start!" on (
+				print "DWGCleanup - Start!"
+				
+				clearNodeSelection()
+				
+				objs = collectVisibleElementsExceptBlocks()
+				
+				if cbUnlink.checked do unlinkObjects objs
+				if cbWireColors.checked do wireColorFromLayer objs
+				if cbRemoveMaterials.checked do removeMaterial objs
+				if cbMoveDrawing.checked do moveToLayer DWGCleanupDwgLayerName objs
+				if cbMoveBlocks.checked do moveBlocksToLayer DWGCleanupBlocksLayerName objects
+				removeLayers cbRemoveEmpty.checked cbRemoveHidden.checked
+				
+				print "DWGCleanup - Finished!"
+			)
 		)
 		
 		on dial close do () 
