@@ -1,4 +1,4 @@
-macroScript PG_SL
+macroScript PG_CamSelect
 	category:"Pawel Grzelak"
 	toolTip:"PG Cam Select"
 	buttonText:"PGCamSelect"
