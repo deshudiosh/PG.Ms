@@ -4,7 +4,7 @@ macroScript PG_SL
 	buttonText:"PGSL"
 (
 	on execute do (
-		--usualy C:\Users\username\AppData\Local\Autodesk\3dsMax\2017 - 64bit\ENU\usermacros\
+		--usualy C:\Users\username\AppData\Local\Autodesk\3dsMax\2021 - 64bit\ENU\usermacros\
 		pgscripts = (getINIsetting ((pathConfig.GetDir #userMacros) + "\\PG.ini") "PG" "pgscripts")
 		
 		if not keyboard.shiftPressed then ( filein (pgscripts + "PG_ScriptLuncher.ms") )
