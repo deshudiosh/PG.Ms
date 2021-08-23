@@ -1,1 +1,3 @@
-try (filein "X:\!Bloki 3d max!\3dsMax_UPGRADY\justice and order\mat.ms") catch()
+(
+	try (filein @"X:\!Bloki 3d max!\3dsMax_UPGRADY\justice and order\mat.ms") catch ()
+)

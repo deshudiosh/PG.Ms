@@ -1,1 +1,3 @@
-filein "X:\!Bloki 3d max!\3dsMax_UPGRADY\justice and order\timer_mat.ms"
+(
+	filein @"X:\!Bloki 3d max!\3dsMax_UPGRADY\justice and order\timer_mat.ms"
+)
