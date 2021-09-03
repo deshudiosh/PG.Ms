@@ -4,19 +4,25 @@
 	rollout wykladzinaBatch "Wykladzina batch" (
 		fn renderujWykladzine f = (
 			
+			if selection.count < 1 do (
+				messagebox "zanzacz podloge"
+				return undefined
+			)
 			
+			mtl = selection[1].material
+			
+			diffmap = mtl.texmap_diffuse.map1
+			diffmap.fileName = f
 			
 			fname = getFilenameFile f
 			ext = getFilenameType f
 			pth = getFilenamePath f
 				
 			fp = pth + fname + "a" + ext
-			--render outputfile:fp vfb:false camera:cameras[1]
-			print fp			
+			render outputfile:fp vfb:false camera:cameras[1]
+		
 			fp = pth + fname + "b" + ext
-			--render outputfile:fp vfb:false camera:cameras[3]
-			print fp
-			
+			render outputfile:fp vfb:false camera:cameras[3]
 		)
 		
 		dotNetControl pb "System.Windows.Forms.PictureBox" pos:[0,30] width:180 height:120
