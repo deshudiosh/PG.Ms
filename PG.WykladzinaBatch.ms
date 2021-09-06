@@ -4,8 +4,8 @@ global wykladzinaBatch
 	
 	rollout wykladzinaBatch "Wykladzina batch" (
 		fn renderujTexture = (
-			fp = maxFilePath + (getFilenameFile maxFileName) + ".jpg"
-			render outputfile:fp vfb:false camera:cameras[1]
+			fp = maxFilePath + (getFilenameFile maxFileName) + ".jpg"			
+ 			render outputfile:fp vfb:false camera:cameras[1]
 		)
 		
 		fn renderujWykladzine f = (
