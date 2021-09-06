@@ -3,6 +3,11 @@ global wykladzinaBatch
 	try(destroyDialog wykladzinaBatch)catch()
 	
 	rollout wykladzinaBatch "Wykladzina batch" (
+		fn renderujTexture = (
+			fp = maxFilePath + (getFilenameFile maxFileName) + ".jpg"
+			render outputfile:fp vfb:false camera:cameras[1]
+		)
+		
 		fn renderujWykladzine f = (
 			
 			if selection.count < 1 do (
@@ -28,10 +33,13 @@ global wykladzinaBatch
 			render outputfile:fp vfb:false camera:cameras[3]
 		)
 		
-		button btcCurrent "Render Current"
+		button btnTxt "Texture" across:2
+		button btnCurrent "Current"
 		dotNetControl pb "System.Windows.Forms.Label" pos:[10,40] width:160 height:100
 		
-		on btcCurrent pressed do ( renderujWykladzine undefined )
+		on btnTxt pressed do ( renderujTexture() )
+		
+		on btnCurrent pressed do ( renderujWykladzine undefined )
 		
 		on pb DragOver s e do ( e.Effect = if e.data.ContainsFileDropList() then e.Effect.Move else e.Effect.None )
 		
