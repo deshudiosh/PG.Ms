@@ -1,3 +1,4 @@
+global wykladzinaBatch
 (
 	try(destroyDialog wykladzinaBatch)catch()
 	
@@ -12,7 +13,9 @@
 			mtl = selection[1].material
 			
 			diffmap = mtl.texmap_diffuse.map1
-			diffmap.fileName = f
+			
+			if f != undefined then diffmap.fileName = f
+			else f = diffmap.fileName
 			
 			fname = getFilenameFile f
 			ext = getFilenameType f
@@ -25,9 +28,10 @@
 			render outputfile:fp vfb:false camera:cameras[3]
 		)
 		
-		dotNetControl pb "System.Windows.Forms.PictureBox" pos:[0,30] width:180 height:120
-			
-		on wykladzinaBatch open do ( pb.AllowDrop = on)
+		button btcCurrent "Render Current"
+		dotNetControl pb "System.Windows.Forms.Label" pos:[10,40] width:160 height:100
+		
+		on btcCurrent pressed do ( renderujWykladzine undefined )
 		
 		on pb DragOver s e do ( e.Effect = if e.data.ContainsFileDropList() then e.Effect.Move else e.Effect.None )
 		
@@ -41,6 +45,12 @@
 					renderujWykladzine f
 				)
 			)
+		)
+		
+		on wykladzinaBatch open do ( 
+			pb.AllowDrop = on
+			pb.TextAlign = pb.TextAlign.MiddleCenter
+			pb.Text = "Drop textures here \nto batch render...";
 		)
 	)
 	
