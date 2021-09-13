@@ -3,6 +3,11 @@ global wykladzinaBatch
 	try(destroyDialog wykladzinaBatch)catch()
 	
 	rollout wykladzinaBatch "Wykladzina batch" (
+-- 		fn getCam idx = (
+-- 			list = for o in cameras where classof o != targetobject collect o
+-- 			list[idx]
+-- 		)
+		
 		fn renderujTexture = (
 			fp = maxFilePath + (getFilenameFile maxFileName) + ".jpg"			
  			render outputfile:fp vfb:false camera:cameras[1]
