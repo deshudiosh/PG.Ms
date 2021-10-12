@@ -1,12 +1,9 @@
 global wykladzinaBatch
-(
+(	
 	try(destroyDialog wykladzinaBatch)catch()
 	
 	rollout wykladzinaBatch "Wykladzina batch" (
--- 		fn getCam idx = (
--- 			list = for o in cameras where classof o != targetobject collect o
--- 			list[idx]
--- 		)
+		local suffix = "", suffixScale = 1, suffixAdd = false
 		
 		fn renderujTexture = (
 			fp = maxFilePath + (getFilenameFile maxFileName) + ".jpg"			
@@ -22,6 +19,7 @@ global wykladzinaBatch
 			
 			mtl = selection[1].material
 			
+			-- DOES THIS EVEN WORK?
 			diffmap
 			if (hasProperty mtl.texmap_diffuse "map1") == true then (
 				diffmap = mtl.texmap_diffuse.map1
@@ -35,17 +33,27 @@ global wykladzinaBatch
 			fname = getFilenameFile f
 			ext = getFilenameType f
 			pth = getFilenamePath f
+			
+			--add scale only if checked
+			scalestr = if suffixAdd == True then suffix else ""
 				
-			fp = pth + fname + "a" + ext
+			fp = pth + fname + scalestr + "a" + ext
 			render outputfile:fp vfb:false camera:cameras[1]
 		
-			fp = pth + fname + "b" + ext
+			fp = pth + fname + scalestr + "b" + ext
 			render outputfile:fp vfb:false camera:cameras[3]
 		)
 		
-		button btnTxt "Texture" across:2
-		button btnCurrent "Current"
-		dotNetControl pb "System.Windows.Forms.Label" pos:[10,40] width:160 height:100
+		fn updateSuffix = (
+			suffix = "_scale" + suffixScale as String
+		)
+		
+		button btnTxt "Texture" across:2 pos:[10, 10]
+		button btnCurrent "Current Floor" pos:[90, 10] width:80
+		dotNetControl pb "System.Windows.Forms.Label" pos:[10,40] width:160 height:50
+		
+		checkbox chbSuffix "\"_scale\" suffix:" pos:[10, 110] checked:suffixAdd
+		spinner spnScaleNum "" range:[1, 1000, suffixScale] type:#integer width:40 pos:[120, 110]
 		
 		on btnTxt pressed do ( renderujTexture() )
 		
@@ -65,13 +73,25 @@ global wykladzinaBatch
 			)
 		)
 		
+		on chbSuffix changed v do ( 
+			suffixAdd = v
+			updateSuffix()
+		)
+		
+		on spnScaleNum changed v do ( 
+			suffixScale = v
+			updateSuffix() 
+		)
+		
 		on wykladzinaBatch open do ( 
 			pb.AllowDrop = on
 			pb.TextAlign = pb.TextAlign.MiddleCenter
 			pb.Text = "Drop textures here \nto batch render...";
+			
+			updateSuffix
 		)
 	)
 	
-	createDialog wykladzinaBatch 180 150
+	createDialog wykladzinaBatch 180 140
 	"Wykladzina Batch"
 )
