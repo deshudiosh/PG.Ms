@@ -22,7 +22,12 @@ global wykladzinaBatch
 			
 			mtl = selection[1].material
 			
-			diffmap = mtl.texmap_diffuse.map1
+			diffmap
+			if (hasProperty mtl.texmap_diffuse "map1") == true then (
+				diffmap = mtl.texmap_diffuse.map1
+			)else(
+				diffmap = mtl.texmap_diffuse
+			)
 			
 			if f != undefined then diffmap.fileName = f
 			else f = diffmap.fileName
