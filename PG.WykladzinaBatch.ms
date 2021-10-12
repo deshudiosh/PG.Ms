@@ -5,9 +5,18 @@ global wykladzinaBatch
 	rollout wykladzinaBatch "Wykladzina batch" (
 		local suffix = "", suffixScale = 1, suffixAdd = false
 		
-		fn renderujTexture = (
-			fp = maxFilePath + (getFilenameFile maxFileName) + ".jpg"			
+		fn renderujTexture = (		
+			fp = maxFilePath + (getFilenameFile maxFileName) + ".jpg"
  			render outputfile:fp vfb:false camera:cameras[1]
+			
+			-- if there is VrayNormalBump render element, save it too
+			for n = 1 to vrayVFBGetNumChannels() do (
+				if vrayVFBGetChannelName n == "VRayBumpNormals" do (
+					b = vrayVFBGetChannelBitmap n
+					b.filename = maxFilePath + (getFilenameFile maxFileName) + "_normal.png"
+					save b gamma:1.0
+				)
+			)
 		)
 		
 		fn renderujWykladzine f = (
@@ -48,7 +57,7 @@ global wykladzinaBatch
 			suffix = "_scale" + suffixScale as String
 		)
 		
-		button btnTxt "Texture" across:2 pos:[10, 10]
+		button btnTxt "Flat texture" across:2 pos:[10, 10]
 		button btnCurrent "Current Floor" pos:[90, 10] width:80
 		dotNetControl pb "System.Windows.Forms.Label" pos:[10,40] width:160 height:50
 		
