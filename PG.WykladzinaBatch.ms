@@ -5,6 +5,8 @@ global wykladzinaBatch
 	rollout wykladzinaBatch "Wykladzina batch" (
 		local suffix = "", suffixScale = 1, suffixAdd = false
 		
+		-- DISABLE 50%%%%%@@@@@
+		
 		fn renderujTexture = (		
 			fp = maxFilePath + (getFilenameFile maxFileName) + ".jpg"
  			render outputfile:fp vfb:false camera:cameras[1]
@@ -46,10 +48,10 @@ global wykladzinaBatch
 			--add scale only if checked
 			scalestr = if suffixAdd == True then suffix else ""
 				
-			fp = pth + fname + scalestr + "a" + ext
+			fp = pth + fname + scalestr + "_a" + ext
 			render outputfile:fp vfb:false camera:cameras[1]
 		
-			fp = pth + fname + scalestr + "b" + ext
+			fp = pth + fname + scalestr + "_b" + ext
 			render outputfile:fp vfb:false camera:cameras[3]
 		)
 		
@@ -97,7 +99,7 @@ global wykladzinaBatch
 			pb.TextAlign = pb.TextAlign.MiddleCenter
 			pb.Text = "Drop textures here \nto batch render...";
 			
-			updateSuffix
+			updateSuffix()
 		)
 	)
 	
