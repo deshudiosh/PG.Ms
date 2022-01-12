@@ -3,7 +3,7 @@ global wykladzinaBatch
 	try(destroyDialog wykladzinaBatch)catch()
 	
 	rollout wykladzinaBatch "Wykladzina batch" (
-		local suffix = "", suffixScale = 1, suffixAdd = false
+		local suffix = "", suffixScale = 1, suffixAdd = false, files
 		
 		-- DISABLE 50%%%%%@@@@@
 		
@@ -47,12 +47,31 @@ global wykladzinaBatch
 			
 			--add scale only if checked
 			scalestr = if suffixAdd == True then suffix else ""
+			
+			wasCancelled = false
+			for cam in cameras where classof cam != TargetObject do (
+				res = getUserProp cam "pgres"
+				suffix = getUserProp cam "pgsuffix"
+				if res != undefined and suffix != undefined do (
+					resx = (filterString res "x")[1] as Number
+					resy = (filterString res "x")[2] as Number
+					fp = pth + fname + scalestr + "_" + suffix + ext
+					render outputfile:fp vfb:false camera:cam outputwidth:resx outputheight:resy cancelled:&wasCancelled
+				)
 				
-			fp = pth + fname + scalestr + "_a" + ext
-			render outputfile:fp vfb:false camera:cameras[1]
+				if wasCancelled do break
+			)
+		)
 		
-			fp = pth + fname + scalestr + "_b" + ext
-			render outputfile:fp vfb:false camera:cameras[3]
+				
+		fn delayedExecFiles sender evt = (
+			sender.enabled = false
+			dotnet.RemoveEventHandler sender "Elapsed" PerformDelayedTasks 
+			---------
+			
+			for f in files where maxOps.canImportBitmap f and doesFileExist f do (
+				renderujWykladzine f
+			)
 		)
 		
 		fn updateSuffix = (
@@ -78,9 +97,11 @@ global wykladzinaBatch
 				data = e.data.GetFileDropList()
 				files = for k=0 to data.count-1 collect data.item[k]
 				
-				for f in files where maxOps.canImportBitmap f and doesFileExist f do (
-					renderujWykladzine f
-				)
+				-- delayed execution to prevent win Explorer hand during the process
+				delayTimer= dotnetobject "Windows.Forms.Timer"
+				delayTimer.Interval=1000
+				dotnet.AddEventHandler delayTimer "Tick" delayedExecFiles
+				delayTimer.enabled = true
 			)
 		)
 		
